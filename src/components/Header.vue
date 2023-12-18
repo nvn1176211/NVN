@@ -9,7 +9,7 @@
         <i class="bi bi-circle-half p-2 me-2 cursor-pointer" id="dark-mode-switch"></i>
         <select name="lang" id="lang-select" class="form-select">
           <option value="en" selected>EN</option>
-          <option value="vi">VI</option>
+          <option value="vi" disabled>VI</option>
         </select>
       </div>
       <div class="d-flex flex-column justify-content-center d-none" id="header-user-info">
