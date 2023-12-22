@@ -1,13 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from "axios";
 
 const events = ref(null);
-eventsLoad();
+onMounted(() => {
+	eventsLoad();
+})
+
 function eventsLoad() {
 	axios.get('https://nvn1.000webhostapp.com/api/events')
 		.then(function (response) {
-			console.log(response.data);
 			let data = response.data;
 			events.value = data.events;
 		});
