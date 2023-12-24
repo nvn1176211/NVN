@@ -6,7 +6,6 @@ import EventsComponent from './components/Events.vue'
 
 <template>
   <HeaderComponent />
-  <!-- <SearchComponent /> -->
   <EventsComponent />
 </template>
 
