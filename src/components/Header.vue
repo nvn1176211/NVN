@@ -1,4 +1,8 @@
 <script setup>
+function darkModeSwitch() {
+  let html = document.documentElement;
+  html.setAttribute('data-bs-theme', html.getAttribute('data-bs-theme') == 'dark' ? '' : 'dark');
+}
 </script>
 
 <template>
@@ -6,7 +10,7 @@
     <h1 class="m-0"><a href="/" class="text-decoration-none">NVN</a></h1>
     <div class="d-flex">
       <div class="me-3 d-flex align-items-center">
-        <i class="bi bi-circle-half p-2 me-2 cursor-pointer" id="dark-mode-switch"></i>
+        <i class="bi bi-circle-half p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
         <select name="lang" id="lang-select" class="form-select">
           <option value="en" selected>EN</option>
           <option value="vi" disabled>VI</option>

@@ -5,8 +5,12 @@ import axios from "axios";
 const events = ref(null);
 const event_search = ref(null);
 const event_pages = ref(0);
+let is_search_requesting = false;
 
 watch(event_search, (new_event_search) => {
+	if(is_search_requesting) return false;
+	is_search_requesting = true;
+
 	axios.get('https://nvn1.000webhostapp.com/api/events', {
 			params: {
 				search: new_event_search
@@ -16,6 +20,7 @@ watch(event_search, (new_event_search) => {
 			let data = response.data;
 			events.value = data.events;
 			event_pages.value = data.events.length;
+			is_search_requesting = false;
 		});
 	}, 
 	{ immediate: true }
