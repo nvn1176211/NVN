@@ -1,11 +1,10 @@
 <script setup>
 import HeaderComponent from './components/Header.vue'
-import EventsComponent from './components/Events.vue'
 </script>
 
 <template>
     <HeaderComponent />
-    <EventsComponent />
+    <router-view/>
 </template>
 
 <style scoped>

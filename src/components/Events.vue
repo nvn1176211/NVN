@@ -8,21 +8,21 @@ const event_pages = ref(0);
 let is_search_requesting = false;
 
 watch(event_search, (new_event_search) => {
-	if(is_search_requesting) return false;
+	if (is_search_requesting) return false;
 	is_search_requesting = true;
 
 	axios.get('https://nvn1.000webhostapp.com/api/events', {
-			params: {
-				search: new_event_search
-			}
-		})
+		params: {
+			search: new_event_search
+		}
+	})
 		.then(function (response) {
 			let data = response.data;
 			events.value = data.events;
 			event_pages.value = data.events.length;
 			is_search_requesting = false;
 		});
-	}, 
+},
 	{ immediate: true }
 )
 </script>
@@ -58,7 +58,7 @@ watch(event_search, (new_event_search) => {
 				<img class="card-img-top" :src="event.thumbnail">
 				<div class="card-body">
 					<h4 class="card-title">{{ event.year }}: {{ event.name }}</h4>
-					<a href="javascript:void(0)">See more</a>
+					<router-link :to="`/events/${event.id}`">See more</router-link>
 				</div>
 			</div>
 		</div>

@@ -7,7 +7,9 @@ function darkModeSwitch() {
 
 <template>
   <div class="d-flex justify-content-between mb-5">
-    <h1 class="m-0"><a href="/" class="text-decoration-none">NVN</a></h1>
+    <h1 class="m-0">
+      <router-link to="/" class="text-decoration-none">NVN</router-link>
+    </h1>
     <div class="d-flex">
       <div class="me-3 d-flex align-items-center">
         <i class="bi bi-circle-half p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
