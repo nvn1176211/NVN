@@ -25,7 +25,7 @@ function darkModeSwitch() {
         </div>
         <button type="button" class="btn btn-link p-0" id="logout-btn">Log Out</button>
       </div>
-      <router-link to="login">Log In</router-link>
+      <router-link to="/login">Log In</router-link>
     </div>
   </div>
 </template>
