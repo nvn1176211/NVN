@@ -10,7 +10,7 @@ function darkModeSwitch() {
     <h1 class="m-0">
       <router-link to="/" class="text-decoration-none">NVN</router-link>
     </h1>
-    <div class="d-flex">
+    <div class="d-flex align-items-center">
       <div class="me-3 d-flex align-items-center">
         <i class="bi bi-circle-half p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
         <select name="lang" id="lang-select" class="form-select">
@@ -25,7 +25,7 @@ function darkModeSwitch() {
         </div>
         <button type="button" class="btn btn-link p-0" id="logout-btn">Log Out</button>
       </div>
-      <button type="button" class="btn btn-link p-0" id="login-btn">Log In</button>
+      <router-link to="login">Log In</router-link>
     </div>
   </div>
 </template>
