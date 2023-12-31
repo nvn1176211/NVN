@@ -5,8 +5,9 @@ import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Events from "./components/Events.vue"
-import Login from "./components/Login.vue"
 import Event from "./components/Event.vue"
+import Login from "./components/Login.vue"
+import Register from "./components/Register.vue"
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -19,6 +20,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     },
     {
       path: '/events/:id',
