@@ -8,7 +8,7 @@
                 <h3 class="card-title text-center">
                     <router-link to="/" class="text-decoration-none">NVN</router-link>
                 </h3>
-                <form method="post">
+                <form @submit.prevent method="post" action="http://localhost:5173/register">
                     <div class="mb-3 mt-3">
                         <label for="email" class="form-label">Email:</label>
                         <input id="email" class="form-control" type="text" name="email" autocomplete="off">
@@ -22,7 +22,7 @@
                         <input id="password" class="form-control" type="password" name="password" autocomplete="off">
                     </div>
                     <div class="mb-3 mt-3">
-                        <button class="btn btn-primary float-end" type="button">Register</button>
+                        <button class="btn btn-primary float-end" type="submit">Register</button>
                     </div>
                 </form>
             </div>

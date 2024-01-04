@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
 import axios from "axios";
 
@@ -22,42 +22,20 @@ onMounted(() => {
             event_created_at.value = event.created_at;
             event_created_by.value = event.created_by;
             event_another_version.value = response.data.another_version;
-            // console.log(event_another_version.value.length, event_another_version.value[0], event_another_version.value[0].link);
             avClass.value = event_another_version.value.length > 0 ? '' : 'd-none';
         });
 })
 async function download_thumbnail(event_thumbnail) {
-
-    // const response = await fetch(event_thumbnail);
-    // console.log(typeof response);return false;
-    // const blobImage = await response.blob();
-    // // console.log(blobImage);
-    // const href = URL.createObjectURL(blobImage);
-    // // console.log(href);
-    // const anchorElement = document.createElement('a');
-    // anchorElement.href = href;
-    // anchorElement.download = 'my-image.png';
-    // document.body.appendChild(anchorElement);
-    // anchorElement.click();
-    // document.body.removeChild(anchorElement);
-    // window.URL.revokeObjectURL(href);
-
-    // axios.get(event_thumbnail)
-    //     .then(function (response) {
-    //         console.log(typeof response);
-    //         // let data = response.data;
-    //         // // console.log(typeof data);
-    //         // const href  = URL.createObjectURL(response);
-    //         // console.log(href);
-
-    //         // var a = document.createElement('a');
-    //         // a.download = 'test.png';
-    //         // a.href = data;
-    //         // // For Firefox https://stackoverflow.com/a/32226068
-    //         // document.body.appendChild(a);
-    //         // a.click();
-    //         // a.remove();
-    //     });
+    const response = await fetch(event_thumbnail);
+    const blobImage = await response.blob();
+    const href = URL.createObjectURL(blobImage);
+    const anchorElement = document.createElement('a');
+    anchorElement.href = href;
+    anchorElement.download = 'thumbnal.png';
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
+    document.body.removeChild(anchorElement);
+    URL.revokeObjectURL(href);
 }
 
 </script>
@@ -78,13 +56,9 @@ async function download_thumbnail(event_thumbnail) {
                 <div class="position-relative p-2 border" id="thumbnail-block">
                     <img :src="event_thumbnail" alt="" width="100%" height="auto">
                     <a class="bg-white position-absolute end-0 bottom-0 p-2 download-btn" href="javascript:void(0)"
-                        :data-href="event_thumbnail">
-                        <i class="bi bi-download"></i>
-                    </a>
-                    <!-- <a class="bg-white position-absolute end-0 bottom-0 p-2 download-btn" href="javascript:void(0)"
                         :data-href="event_thumbnail" @click="download_thumbnail(event_thumbnail)">
                         <i class="bi bi-download"></i>
-                    </a> -->
+                    </a>
                 </div>
             </div>
         </div>
