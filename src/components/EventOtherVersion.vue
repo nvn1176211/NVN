@@ -9,10 +9,8 @@ const event_content = ref(null);
 const event_thumbnail = ref(null);
 const event_created_at = ref(null);
 const event_created_by = ref(null);
-const event_another_version = ref([]);
-const avClass = ref(null);
 onMounted(async () => {
-    await fetch(`https://nvn1.000webhostapp.com/api/events/${event_id}`)
+    await fetch(`https://nvn1.000webhostapp.com/api/events/other_version/${event_id}`)
         .then((response) => {
             return response.json();
         })
@@ -23,8 +21,6 @@ onMounted(async () => {
             event_thumbnail.value = event.thumbnail;
             event_created_at.value = event.created_at;
             event_created_by.value = event.created_by;
-            event_another_version.value = json.another_version;
-            avClass.value = event_another_version.value.length > 0 ? '' : 'd-none';
         });
 })
 async function download_thumbnail(event_thumbnail) {
@@ -63,22 +59,6 @@ async function download_thumbnail(event_thumbnail) {
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
-    <div :class="avClass">
-        <h6>Edit History</h6>
-        <hr class="mt-2 mb-2">
-        <div>
-            <ul id="event-edit-history-ul">
-                <li>
-                    <router-link :to="`/events/${event_id}`">Created at: {{ event_created_at }} - Created by: {{
-                        event_created_by }}</router-link>
-                </li>
-                <li v-for="item in event_another_version">
-                    <!-- <a href="javascript:void(0)">Created at: {{ item.created_at }} - Created by: {{ item.created_by }}</a> -->
-                    <router-link :to="item.link.replace('https://nvn1.000webhostapp.com/api', '')">Created at: {{ item.created_at }} - Created by: {{ item.created_by }}</router-link>
-                </li>
-            </ul>
         </div>
     </div>
     <div class="modal fade" id="removeConfirmModal" tabindex="-1" aria-labelledby="removeConfirmModalLabel"

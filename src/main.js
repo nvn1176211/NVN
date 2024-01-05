@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Events from "./components/Events.vue"
 import Event from "./components/Event.vue"
+import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
 const router = createRouter({
@@ -30,6 +31,11 @@ const router = createRouter({
       path: '/events/:id',
       name: 'event',
       component: Event
+    },
+    {
+      path: '/events/other_version/:id',
+      name: 'eventOtherVersion',
+      component: EventOtherVersion
     },
   ]
 })
