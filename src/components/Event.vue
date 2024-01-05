@@ -12,16 +12,19 @@ const event_created_at = ref(null);
 const event_created_by = ref(null);
 const event_another_version = ref([]);
 const avClass = ref(null);
-onMounted(() => {
-    axios.get(`https://nvn1.000webhostapp.com/api/events/${event_id}`)
-        .then(function (response) {
-            let event = response.data.event;
+onMounted(async () => {
+    await fetch(`https://nvn1.000webhostapp.com/api/events/${event_id}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            let event = json.event;
             event_name.value = event.name;
             event_content.value = event.content;
             event_thumbnail.value = event.thumbnail;
             event_created_at.value = event.created_at;
             event_created_by.value = event.created_by;
-            event_another_version.value = response.data.another_version;
+            event_another_version.value = json.another_version;
             avClass.value = event_another_version.value.length > 0 ? '' : 'd-none';
         });
 })

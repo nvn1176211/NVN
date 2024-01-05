@@ -7,21 +7,19 @@ const event_search = ref(null);
 const event_pages = ref(0);
 let is_search_requesting = false;
 
-watch(event_search, (new_event_search) => {
+watch(event_search, async (new_event_search) => {
 	if (is_search_requesting) return false;
 	is_search_requesting = true;
 
-	axios.get('https://nvn1.000webhostapp.com/api/events', {
-		params: {
-			search: new_event_search
-		}
-	})
-		.then(function (response) {
-			let data = response.data;
-			events.value = data.events;
-			event_pages.value = data.events.length;
+	await fetch(`https://nvn1.000webhostapp.com/api/events?search=${new_event_search === null ? '' : new_event_search}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            events.value = json.events;
+			event_pages.value = json.events.length;
 			is_search_requesting = false;
-		});
+        });
 },
 	{ immediate: true }
 )
