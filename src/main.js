@@ -1,8 +1,9 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 import Events from "./components/Events.vue"
 import Event from "./components/Event.vue"
@@ -10,7 +11,7 @@ import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -39,7 +40,8 @@ const router = createRouter({
     },
   ]
 })
-
+const pinia = createPinia()
 const app = createApp(App)
 app.use(router)
+app.use(pinia)
 app.mount('#app')

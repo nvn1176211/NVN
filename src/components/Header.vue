@@ -1,7 +1,28 @@
 <script setup>
+import { onMounted } from 'vue';
+import { useUserStore } from '../stores/UserStore';
+
+const userStore = useUserStore();
+onMounted(async () => {
+	let api_token = getCookie('api_token');
+  if(!api_token) return false;
+	const response = await fetch(`https://nvn1.000webhostapp.com/api/user?api_token=${api_token}`);
+  const resBodyObj = await response.json();
+	switch (response.status) {
+		case 200:
+			userStore.username = resBodyObj.username;
+			userStore.isAdmin = resBodyObj.isAdmin;
+			userStore.isLoggedIn = true;
+			break;
+	}
+});
 function darkModeSwitch() {
   let html = document.documentElement;
   html.setAttribute('data-bs-theme', html.getAttribute('data-bs-theme') == 'dark' ? '' : 'dark');
+}
+function logout(){
+  setCookieY('api_token', 'value', -1, '/');
+  userStore.$reset();
 }
 </script>
 
@@ -18,14 +39,14 @@ function darkModeSwitch() {
           <option value="vi" disabled>VI</option>
         </select>
       </div>
-      <div class="d-flex flex-column justify-content-center d-none" id="header-user-info">
+      <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
         <div>
-          <span class="badge bg-primary" id="header-user-username"></span>
-          <span class="badge bg-info d-none" id="header-admin-label">Admin</span>
+          <span class="badge bg-primary" id="header-user-username">{{ userStore.username }}</span>
+          <span v-if="userStore.isAdmin" class="badge bg-info" id="header-admin-label">Admin</span>
         </div>
-        <button type="button" class="btn btn-link p-0" id="logout-btn">Log Out</button>
+        <button type="button" class="btn btn-link p-0" @click="logout">Log Out</button>
       </div>
-      <router-link to="/login">Log In</router-link>
+      <router-link to="/login" v-if="!userStore.isLoggedIn">Log In</router-link>
     </div>
   </div>
 </template>

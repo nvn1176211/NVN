@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch } from 'vue';
-import axios from "axios";
 
 const events = ref(null);
 const event_search = ref(null);
@@ -12,17 +11,17 @@ watch(event_search, async (new_event_search) => {
 	is_search_requesting = true;
 
 	await fetch(`https://nvn1.000webhostapp.com/api/events?search=${new_event_search === null ? '' : new_event_search}`)
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            events.value = json.events;
+		.then((response) => {
+			return response.json();
+		})
+		.then((json) => {
+			events.value = json.events;
 			event_pages.value = json.events.length;
 			is_search_requesting = false;
-        });
+		});
 },
 	{ immediate: true }
-)
+);
 </script>
 
 <template>
