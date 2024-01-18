@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useUserStore } from '../stores/UserStore';
@@ -24,8 +24,11 @@ const input = reactive({
     }
 });
 const isDisabledBtn = ref(false);
+onMounted(() => {
+    if(userStore.isLoggedIn) router.push('/'); 
+})
 async function register() {
-    refreshFormErrMsg();
+    refreshFormErrInput(input);
     isDisabledBtn.value = true;
     let formdata = new FormData();
     if (input.email.val) formdata.append("email", input.email.val);
@@ -41,7 +44,7 @@ async function register() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj);
+            handleInvalidInput(resBodyObj, input);
             break;
         case 201:
             alert('You have successfully registered!');
@@ -53,16 +56,6 @@ async function register() {
             break;
     }
     isDisabledBtn.value = false;
-}
-function handleInvalidInput(json) {
-    let errorObj = json.errors;
-    for (const key in errorObj) {
-        input[key].isInvalid = true;
-        input[key].errMsg = errorObj[key][0];
-    }
-}
-function refreshFormErrMsg() {
-    input.email.isInvalid = input.username.isInvalid = input.password.isInvalid = false;
 }
 </script>
 
@@ -93,7 +86,7 @@ function refreshFormErrMsg() {
                         <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
                     <div class="mb-3 mt-3 text-end">
-                        <SubmitBtnComponent @submit="register" :isDisabled="isDisabledBtn" />
+                        <SubmitBtnComponent @submit="register" :isDisabled="isDisabledBtn">Register</SubmitBtnComponent>
                     </div>
                 </form>
             </div>

@@ -17,4 +17,23 @@ window.setCookieY = (name, value, yearDuration, path) => {
   expire.setFullYear(expire.getFullYear() + yearDuration);
   document.cookie = `${name}=${value};expires=${expire};path=${path}`;
 }
-export default { getCookie, setCookieY };
+/**
+* @param  Object $input
+*/
+window.refreshFormErrInput = (input) => {
+  for (const key in input) {
+    input[key].isInvalid = false;
+  }
+}
+/**
+* @param  Object $errors
+* @param  Object $input
+*/
+window.handleInvalidInput = (errors, input) => {
+  let errInputObj = errors.errors;
+  for (const key in errInputObj) {
+      input[key].isInvalid = true;
+      input[key].errMsg = errInputObj[key][0];
+  }
+}
+export default { getCookie, setCookieY, refreshFormErrInput, handleInvalidInput };

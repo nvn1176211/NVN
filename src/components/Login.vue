@@ -1,4 +1,56 @@
 <script setup>
+import { onMounted, ref, reactive } from 'vue';
+import SubmitBtnComponent from './partials/SubmitBtn.vue';
+import { useUserStore } from '../stores/UserStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const userStore = useUserStore();
+const isDisabledBtn = ref(false);
+const input = reactive({
+    username: {
+        errMsg: null,
+        isInvalid: false,
+        val: null,
+    },
+    password: {
+        errMsg: null,
+        isInvalid: false,
+        val: null,
+    }
+});
+onMounted(() => {
+    if(userStore.isLoggedIn) router.push('/'); 
+})
+async function login(){
+    refreshFormErrInput(input);
+    isDisabledBtn.value = true;
+    let formdata = new FormData();
+    if (input.username.val) formdata.append("username", input.username.val);
+    if (input.password.val) formdata.append("password", input.password.val);
+    const response = await fetch('https://nvn1.000webhostapp.com/api/login', {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+        },
+        body: formdata
+    });
+    const resBodyObj = await response.json();
+    switch (response.status) {
+        case 422:
+            handleInvalidInput(resBodyObj, input);
+            break;
+        case 200:
+            alert('You have successfully loged in!');
+            setCookieY('api_token', resBodyObj.api_token, 1, '/');
+            userStore.username = resBodyObj.username;
+			userStore.isAdmin = resBodyObj.isAdmin;
+			userStore.isLoggedIn = true;
+            router.push('/');
+            break;
+    }
+    isDisabledBtn.value = false;
+}
 </script>
 
 <template>
@@ -10,16 +62,18 @@
                 </h3>
                 <form method="post" id="loginForm">
                     <div class="mb-3 mt-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input id="username" class="form-control" type="text" name="username" autocomplete="off">
+                        <label class="form-label">Username:</label>
+                        <input :class="{ 'is-invalid': input.username.isInvalid }" v-model="input.username.val" class="form-control" type="text" name="username" autocomplete="off">
+                        <div class="invalid-feedback">{{ input.username.errMsg }}</div>
                     </div>
                     <div class="mb-5 mt-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input id="password" class="form-control" type="text" name="password" autocomplete="off">
+                        <label class="form-label">Password:</label>
+                        <input :class="{ 'is-invalid': input.password.isInvalid }" v-model="input.password.val" class="form-control" type="text" name="password" autocomplete="off">
+                        <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <router-link to="/register">Create Account</router-link>
-                        <button class="btn btn-primary" type="button">SIGN IN</button>
+                        <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn">Login</SubmitBtnComponent>
                     </div>
                 </form>
             </div>

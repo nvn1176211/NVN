@@ -9,6 +9,6 @@ function submit() {
 <template>
     <button class="btn btn-primary" type="button" @click="submit" :disabled="isDisabled">
         <span v-show="isDisabled" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Register
+        <slot />
     </button>
 </template>
