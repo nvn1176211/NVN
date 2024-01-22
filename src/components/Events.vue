@@ -28,7 +28,7 @@ watch(event_search, async (new_event_search) => {
 	<div class="row">
 		<div class="col-12 col-md-6">
 			<div class="position-relative h-100">
-				<input id="t-search-i" class="form-control h-100" type="text" placeholder="Enter event name..." code-val=""
+				<input id="t-search-i" class="form-control h-100" type="text" :placeholder="$t('messages.eventSearchPlaceholder')" code-val=""
 					v-model="event_search">
 				<div id="s-result-popup">
 
@@ -39,7 +39,7 @@ watch(event_search, async (new_event_search) => {
 			<div class="d-flex align-items-center justify-content-end">
 				<div class="d-flex flex-column me-2">
 					<span>{{ event_pages }}</span>
-					<span>PAGES</span>
+					<span class="text-uppercase">{{ $t('labels.pages') }}</span>
 				</div>
 				<div class="d-none" id="createPageCtn">
 					<a href="#" class="btn btn-primary" title="Create new page" id="createPageBtn">
@@ -55,7 +55,7 @@ watch(event_search, async (new_event_search) => {
 				<img class="card-img-top" :src="event.thumbnail">
 				<div class="card-body">
 					<h4 class="card-title">{{ event.year }}: {{ event.name }}</h4>
-					<router-link :to="`/events/${event.id}`">See more</router-link>
+					<router-link :to="`/events/${event.id}`" class="text-capitalize">{{ $t('labels.seeMore') }}</router-link>
 				</div>
 			</div>
 		</div>

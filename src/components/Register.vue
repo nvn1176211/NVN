@@ -3,7 +3,9 @@ import { onMounted, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useUserStore } from '../stores/UserStore';
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const userStore = useUserStore();
 const router = useRouter();
 const input = reactive({
@@ -47,7 +49,7 @@ async function register() {
             handleInvalidInput(resBodyObj, input);
             break;
         case 201:
-            alert('You have successfully registered!');
+            alert(t("messages.successRegisterMsg"));
             setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
 			userStore.isAdmin = resBodyObj.isAdmin;
@@ -68,25 +70,25 @@ async function register() {
                 </h3>
                 <form>
                     <div class="mb-3 mt-3">
-                        <label for="email" class="form-label">Email:</label>
+                        <label for="email" class="form-label text-capitalize">{{ $t("labels.email") }}:</label>
                         <input id="email" :class="{ 'is-invalid': input.email.isInvalid }" class="form-control"
                             v-model="input.email.val" type="text" name="email" autocomplete="off">
                         <div class="invalid-feedback">{{ input.email.errMsg }}</div>
                     </div>
                     <div class="mb-3 mt-3">
-                        <label for="username" class="form-label">Username:</label>
+                        <label for="username" class="form-label text-capitalize">{{ $t("labels.username") }}:</label>
                         <input id="username" :class="{ 'is-invalid': input.username.isInvalid }" class="form-control"
                             v-model="input.username.val" type="text" name="username" autocomplete="off">
                         <div class="invalid-feedback">{{ input.username.errMsg }}</div>
                     </div>
                     <div class="mb-5 mt-3">
-                        <label for="password" class="form-label">Password:</label>
+                        <label for="password" class="form-label text-capitalize">{{ $t("labels.password") }}:</label>
                         <input id="password" :class="{ 'is-invalid': input.password.isInvalid }" class="form-control"
                             v-model="input.password.val" type="password" name="password" autocomplete="off">
                         <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
                     <div class="mb-3 mt-3 text-end">
-                        <SubmitBtnComponent @submit="register" :isDisabled="isDisabledBtn">Register</SubmitBtnComponent>
+                        <SubmitBtnComponent @submit="register" :isDisabled="isDisabledBtn" class="text-capitalize">{{ $t("labels.register") }}</SubmitBtnComponent>
                     </div>
                 </form>
             </div>

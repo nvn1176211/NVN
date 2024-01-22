@@ -34,9 +34,8 @@ function logout(){
     <div class="d-flex align-items-center">
       <div class="me-3 d-flex align-items-center">
         <i class="bi bi-circle-half p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
-        <select name="lang" id="lang-select" class="form-select">
-          <option value="en" selected>EN</option>
-          <option value="vi" disabled>VI</option>
+        <select v-model="$i18n.locale" class="form-select">
+          <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}</option>
         </select>
       </div>
       <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
@@ -46,7 +45,7 @@ function logout(){
         </div>
         <button type="button" class="btn btn-link p-0" @click="logout">Log Out</button>
       </div>
-      <router-link to="/login" v-if="!userStore.isLoggedIn">Log In</router-link>
+      <router-link to="/login" v-if="!userStore.isLoggedIn" class="text-capitalize">{{ $t("labels.login") }}</router-link>
     </div>
   </div>
 </template>

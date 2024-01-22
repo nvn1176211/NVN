@@ -3,7 +3,9 @@ import { onMounted, ref, reactive } from 'vue';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useUserStore } from '../stores/UserStore';
 import { useRouter } from 'vue-router';
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 const isDisabledBtn = ref(false);
@@ -41,7 +43,7 @@ async function login(){
             handleInvalidInput(resBodyObj, input);
             break;
         case 200:
-            alert('You have successfully loged in!');
+            alert(t("messages.successLoginMsg"));
             setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
 			userStore.isAdmin = resBodyObj.isAdmin;
@@ -62,18 +64,18 @@ async function login(){
                 </h3>
                 <form method="post" id="loginForm">
                     <div class="mb-3 mt-3">
-                        <label class="form-label">Username:</label>
+                        <label class="form-label text-capitalize">{{ $t("labels.username") }}:</label>
                         <input :class="{ 'is-invalid': input.username.isInvalid }" v-model="input.username.val" class="form-control" type="text" name="username" autocomplete="off">
                         <div class="invalid-feedback">{{ input.username.errMsg }}</div>
                     </div>
                     <div class="mb-5 mt-3">
-                        <label class="form-label">Password:</label>
+                        <label class="form-label text-capitalize">{{ $t("labels.password") }}:</label>
                         <input :class="{ 'is-invalid': input.password.isInvalid }" v-model="input.password.val" class="form-control" type="text" name="password" autocomplete="off">
                         <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <router-link to="/register">Create Account</router-link>
-                        <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn">Login</SubmitBtnComponent>
+                        <router-link to="/register" class="text-capitalize">{{ $t("labels.createAcc") }}</router-link>
+                        <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn" class="text-capitalize">{{ $t("labels.login") }}</SubmitBtnComponent>
                     </div>
                 </form>
             </div>
