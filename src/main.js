@@ -1,21 +1,23 @@
 import './assets/main.css'
-
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import App from './App.vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
-import { createI18n } from 'vue-i18n'
+const app = createApp(App)
 
+//store
+import { createPinia } from 'pinia'
+const pinia = createPinia()
+app.use(pinia)
+
+//router
+import { useUserStore } from './stores/UserStore';
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Events from "./components/Events.vue"
 import Event from "./components/Event.vue"
+import EventCreate from "./components/EventCreate.vue"
 import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
-import enLabels from "./locales/en/labels.json"
-import viLabels from "./locales/vi/labels.json"
-import enMessages from "./locales/en/messages.json"
-import viMessages from "./locales/vi/messages.json"
-
+const userStore = useUserStore();
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -35,6 +37,11 @@ const router = createRouter({
       component: Register
     },
     {
+      path: '/create_event',
+      name: 'createEvent',
+      component: EventCreate
+    },
+    {
       path: '/events/:id',
       name: 'event',
       component: Event
@@ -45,8 +52,24 @@ const router = createRouter({
       component: EventOtherVersion
     },
   ]
+});
+router.beforeEach((to, from) => {
+  const userStore = useUserStore();
+  if(
+    ((to.name == "login" || to.name == 'register') && userStore.isLoggedIn)
+    || (to.name == "createEvent" && !userStore.isLoggedIn)
+    ){
+    return { name: 'events' }
+  }
 })
-const pinia = createPinia()
+app.use(router)
+
+//localization
+import { createI18n } from 'vue-i18n'
+import enLabels from "./locales/en/labels.json"
+import viLabels from "./locales/vi/labels.json"
+import enMessages from "./locales/en/messages.json"
+import viMessages from "./locales/vi/messages.json"
 const messages = {
   en: {
     labels: enLabels, 
@@ -63,8 +86,6 @@ const i18n = createI18n({
   fallbackLocale: 'en', // set fallback locale
   messages,
 })
-const app = createApp(App)
-app.use(router)
-app.use(pinia)
 app.use(i18n)
+
 app.mount('#app')

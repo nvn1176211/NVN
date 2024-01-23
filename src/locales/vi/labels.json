@@ -1,4 +1,5 @@
 {
+    "create": "tạo",
     "login": "đăng nhập",
     "register": "ghi danh",
     "pages": "trang",
@@ -6,5 +7,8 @@
     "createAcc": "tạo tài khoản",
     "username": "tên người dùng",
     "password": "mật khẩu",
-    "email": "email"
+    "email": "email",
+    "startDate": "ngày bắt đầu",
+    "thumbnail": "ảnh đại diện",
+    "content": "nội dung"
 }

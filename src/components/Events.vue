@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { useUserStore } from '../stores/UserStore';
 
+const userStore = useUserStore();
 const events = ref(null);
 const event_search = ref(null);
 const event_pages = ref(0);
@@ -41,10 +43,10 @@ watch(event_search, async (new_event_search) => {
 					<span>{{ event_pages }}</span>
 					<span class="text-uppercase">{{ $t('labels.pages') }}</span>
 				</div>
-				<div class="d-none" id="createPageCtn">
-					<a href="#" class="btn btn-primary" title="Create new page" id="createPageBtn">
+				<div id="createPageCtn" v-if="userStore.isLoggedIn">
+					<router-link to="create_event" class="btn btn-primary" title="Create new page">
 						<i class="bi bi-plus-lg"></i>
-					</a>
+					</router-link>
 				</div>
 			</div>
 		</div>

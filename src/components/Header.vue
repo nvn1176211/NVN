@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useUserStore } from '../stores/UserStore';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 onMounted(async () => {
 	let api_token = getCookie('api_token');
@@ -23,6 +25,7 @@ function darkModeSwitch() {
 function logout(){
   setCookieY('api_token', 'value', -1, '/');
   userStore.$reset();
+  router.push('/'); 
 }
 </script>
 

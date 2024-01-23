@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useUserStore } from '../stores/UserStore';
@@ -26,9 +26,6 @@ const input = reactive({
     }
 });
 const isDisabledBtn = ref(false);
-onMounted(() => {
-    if(userStore.isLoggedIn) router.push('/'); 
-})
 async function register() {
     refreshFormErrInput(input);
     isDisabledBtn.value = true;
