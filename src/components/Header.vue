@@ -1,23 +1,9 @@
 <script setup>
-import { onMounted } from 'vue';
 import { useUserStore } from '../stores/UserStore';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const userStore = useUserStore();
-onMounted(async () => {
-	let api_token = getCookie('api_token');
-  if(!api_token) return false;
-	const response = await fetch(`https://nvn1.000webhostapp.com/api/user?api_token=${api_token}`);
-  const resBodyObj = await response.json();
-	switch (response.status) {
-		case 200:
-			userStore.username = resBodyObj.username;
-			userStore.isAdmin = resBodyObj.isAdmin;
-			userStore.isLoggedIn = true;
-			break;
-	}
-});
 function darkModeSwitch() {
   let html = document.documentElement;
   html.setAttribute('data-bs-theme', html.getAttribute('data-bs-theme') == 'dark' ? '' : 'dark');

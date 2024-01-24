@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 const input = reactive({
     tag: {
         errMsg: null,
@@ -23,6 +23,11 @@ const input = reactive({
         val: null,
     },
 });
+onMounted(async () => {
+    const response = await fetch('https://nvn1.000webhostapp.com/api/event_tags');
+    const resBodyObj = await response.json();
+    tag.options.value = resBodyObj.event_tags;
+});
 </script>
 
 <template>
@@ -41,7 +46,7 @@ const input = reactive({
                 <div class="mb-3 mt-3">
                     <label for="startDate" class="form-label text-capitalize">{{ $t('labels.startDate') }}:</label>
                     <input :class="{ 'is-invalid': input.startDate.isInvalid }" v-model="input.startDate.val"
-                        class="form-control" type="datetime-local" name="startDate" autocomplete="off">
+                        class="form-control" type="datetime-local" name="startDate" id="startDate" autocomplete="off">
                     <div class="invalid-feedback">{{ input.startDate.errMsg }}</div>
                 </div>
             </div>
@@ -62,6 +67,7 @@ const input = reactive({
         </div>
         <div class="d-flex justify-content-end">
             <button class="btn btn-primary text-capitalize" type="button" id="submitCreatePageBtn">{{ $t('labels.create')
-                            }}</button>
+            }}</button>
         </div>
-</form></template>
+    </form>
+</template>

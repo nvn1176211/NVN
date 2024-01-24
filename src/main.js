@@ -17,7 +17,6 @@ import EventCreate from "./components/EventCreate.vue"
 import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
-const userStore = useUserStore();
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -53,8 +52,20 @@ const router = createRouter({
     },
   ]
 });
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
   const userStore = useUserStore();
+  let api_token = getCookie('api_token');
+  if(api_token){
+    const response = await fetch(`https://nvn1.000webhostapp.com/api/user?api_token=${api_token}`);
+    const resBodyObj = await response.json();
+    switch (response.status) {
+      case 200:
+        userStore.username = resBodyObj.username;
+        userStore.isAdmin = resBodyObj.isAdmin;
+        userStore.isLoggedIn = true;
+        break;
+    }
+  }
   if(
     ((to.name == "login" || to.name == 'register') && userStore.isLoggedIn)
     || (to.name == "createEvent" && !userStore.isLoggedIn)
