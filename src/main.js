@@ -65,7 +65,7 @@ router.beforeEach(async (to, from) => {
     switch (response.status) {
       case 200:
         userStore.username = resBodyObj.username;
-        userStore.isAdmin = resBodyObj.isAdmin;
+        userStore.isAdmin = resBodyObj.is_admin;
         userStore.isLoggedIn = true;
         break;
       case 401:

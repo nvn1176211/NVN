@@ -29,7 +29,7 @@ function logout(){
       </div>
       <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
         <div>
-          <span class="badge bg-primary" id="header-user-username">{{ userStore.username }}</span>
+          <span class="badge bg-primary me-1" id="header-user-username">{{ userStore.username }}</span>
           <span v-if="userStore.isAdmin" class="badge bg-info" id="header-admin-label">Admin</span>
         </div>
         <button type="button" class="btn btn-link p-0" @click="logout">Log Out</button>
