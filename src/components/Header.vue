@@ -23,7 +23,7 @@ function logout(){
     <div class="d-flex align-items-center">
       <div class="me-3 d-flex align-items-center">
         <i class="bi bi-circle-half p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
-        <select v-model="$i18n.locale" class="form-select">
+        <select v-model="$i18n.locale" class="form-select" name="locale">
           <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}</option>
         </select>
       </div>
