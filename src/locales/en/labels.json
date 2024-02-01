@@ -1,6 +1,7 @@
 {
     "create": "create",
     "login": "login",
+    "logout": "log out",
     "register": "register",
     "pages": "pages",
     "seeMore": "see more",
@@ -10,5 +11,7 @@
     "email": "email",
     "startDate": "start date",
     "thumbnail": "thumbnail",
-    "content": "content"
+    "content": "content",
+    "yes": "yes",
+    "no": "no"
 }

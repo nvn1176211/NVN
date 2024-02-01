@@ -1,4 +1,6 @@
 import './assets/main.css'
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App)
@@ -88,7 +90,7 @@ import enLabels from "./locales/en/labels.json"
 import viLabels from "./locales/vi/labels.json"
 import enMessages from "./locales/en/messages.json"
 import viMessages from "./locales/vi/messages.json"
-const messages = {
+const localeData = {
   en: {
     labels: enLabels,
     messages: enMessages,
@@ -102,7 +104,7 @@ const i18n = createI18n({
   legacy: false, // you must set `false`, to use Composition API
   locale: 'en', // set locale
   fallbackLocale: 'en', // set fallback locale
-  messages,
+  messages: localeData,
 })
 app.use(i18n)
 

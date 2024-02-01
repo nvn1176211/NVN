@@ -1,6 +1,7 @@
 {
     "create": "tạo",
     "login": "đăng nhập",
+    "logout": "đăng xuất",
     "register": "ghi danh",
     "pages": "trang",
     "seeMore": "tìm hiểu thêm",
@@ -10,5 +11,7 @@
     "email": "email",
     "startDate": "ngày bắt đầu",
     "thumbnail": "ảnh đại diện",
-    "content": "nội dung"
+    "content": "nội dung",
+    "yes": "có",
+    "no": "không"
 }

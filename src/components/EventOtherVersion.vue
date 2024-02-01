@@ -1,7 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
+import { useI18n } from "vue-i18n";
+import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/UserStore';
+import SubmitBtnComponent from './partials/SubmitBtn.vue';
 
+const userStore = useUserStore();
+const router = useRouter();
+const { t } = useI18n();
 const route = useRoute();
 const event_id = route.params.id;
 const event_name = ref(null);
@@ -9,7 +16,13 @@ const event_content = ref(null);
 const event_thumbnail = ref(null);
 const event_created_at = ref(null);
 const event_created_by = ref(null);
+let removeConfirmModal = null;
+const isDisabledBtn = ref(false);
 onMounted(async () => {
+    removeConfirmModal = new bootstrap.Modal(document.getElementById('removeConfirmModal'), {
+        keyboard: false
+    })
+    
     await fetch(`https://nvn1.000webhostapp.com/api/events/other_version/${event_id}`)
         .then((response) => {
             return response.json();
@@ -35,6 +48,22 @@ async function download_thumbnail(event_thumbnail) {
     document.body.removeChild(anchorElement);
     URL.revokeObjectURL(href);
 }
+async function removePage() {
+    isDisabledBtn.value = true;
+    let api_token = getCookie('api_token');
+    const response = await fetch(`https://nvn1.000webhostapp.com/api/events/other_version/${event_id}/delete?api_token=${api_token}`);
+    switch (response.status) {
+        case 200:
+            removeConfirmModal.hide();
+            alert(t("messages.eventPageDeleted"));
+            router.push('/');
+            break;
+        default:
+            removeConfirmModal.hide();
+            alert(t("messages.somethingWrong"));
+    }
+    isDisabledBtn.value = false;
+}
 
 </script>
 
@@ -43,7 +72,7 @@ async function download_thumbnail(event_thumbnail) {
         <div class="mb-4">
             <div id="title-block" class="d-flex justify-content-between align-items-center">
                 <h2>{{ event_name }}</h2>
-                <button class="btn btn-danger d-none" data-bs-toggle="modal" data-bs-target="#removeConfirmModal"
+                <button v-if="userStore.isAdmin" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeConfirmModal"
                     id="removeEventPageBtn"><i class="bi bi-trash"></i></button>
             </div>
             <hr class="mt-2 mb-0">
@@ -66,12 +95,13 @@ async function download_thumbnail(event_thumbnail) {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title text-center" id="removeConfirmModalLabel">Are you sure?</h5>
+                    <h5 class="modal-title text-center" id="removeConfirmModalLabel">{{ $t("messages.areYouSure") }}</h5>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-primary" id="removeConfirmedBtn"
-                        data-bs-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{
+                        $t("labels.no") }}</button>
+                    <SubmitBtnComponent @submit="removePage" :isDisabled="isDisabledBtn" class="text-capitalize">{{
+                        $t("labels.yes") }}</SubmitBtnComponent>
                 </div>
             </div>
         </div>

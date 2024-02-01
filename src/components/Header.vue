@@ -32,7 +32,7 @@ function logout(){
           <span class="badge bg-primary me-1" id="header-user-username">{{ userStore.username }}</span>
           <span v-if="userStore.isAdmin" class="badge bg-info" id="header-admin-label">Admin</span>
         </div>
-        <button type="button" class="btn btn-link p-0" @click="logout">Log Out</button>
+        <button type="button" class="btn btn-link p-0 text-capitalize" @click="logout">{{ $t("labels.logout") }}</button>
       </div>
       <router-link to="/login" v-if="!userStore.isLoggedIn" class="text-capitalize">{{ $t("labels.login") }}</router-link>
     </div>

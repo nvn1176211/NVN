@@ -2,5 +2,9 @@
     "eventSearchPlaceholder": "Enter event name...",
     "successLoginMsg": "You have successfully loged in!",
     "successRegisterMsg": "You have successfully registered!",
-    "successCreateEventPage": "You have successfully created event page!"
+    "successCreateEventPage": "You have successfully created event page!",
+    "areYouSure": "Are you sure?",
+    "eventPageDeleted": "Event page has been deleted.",
+    "forbidDeleteLastPage": "You can't delete last event page.",
+    "somethingWrong": "Something is wrong"
 }
