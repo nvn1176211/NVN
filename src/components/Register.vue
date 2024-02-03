@@ -33,7 +33,7 @@ async function register() {
     if (input.email.val) formdata.append("email", input.email.val);
     if (input.username.val) formdata.append("username", input.username.val);
     if (input.password.val) formdata.append("password", input.password.val);
-    const response = await fetch('https://nvn1.000webhostapp.com/api/register', {
+    const response = await fetch(`${API_BASE}/register`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',

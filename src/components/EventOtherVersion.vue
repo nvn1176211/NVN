@@ -23,7 +23,7 @@ onMounted(async () => {
         keyboard: false
     })
     
-    await fetch(`https://nvn1.000webhostapp.com/api/events/other_version/${event_id}`)
+    await fetch(`${API_BASE}/events/other_version/${event_id}`)
         .then((response) => {
             return response.json();
         })
@@ -51,7 +51,7 @@ async function download_thumbnail(event_thumbnail) {
 async function removePage() {
     isDisabledBtn.value = true;
     let api_token = getCookie('api_token');
-    const response = await fetch(`https://nvn1.000webhostapp.com/api/events/other_version/${event_id}/delete?api_token=${api_token}`);
+    const response = await fetch(`${API_BASE}/events/other_version/${event_id}/delete?api_token=${api_token}`);
     switch (response.status) {
         case 200:
             removeConfirmModal.hide();

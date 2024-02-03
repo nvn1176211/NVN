@@ -12,7 +12,7 @@ watch(event_search, async (new_event_search) => {
 	if (is_search_requesting) return false;
 	is_search_requesting = true;
 
-	await fetch(`https://nvn1.000webhostapp.com/api/events?search=${new_event_search === null ? '' : new_event_search}`)
+	await fetch(`${API_BASE}/events?search=${new_event_search === null ? '' : new_event_search}`)
 		.then((response) => {
 			return response.json();
 		})

@@ -39,7 +39,7 @@ const tagCreationInput = reactive({
 });
 const isDisabledBtn = ref(false);
 onMounted(async () => {
-    const response = await fetch('https://nvn1.000webhostapp.com/api/event_tags');
+    const response = await fetch(`${API_BASE}/event_tags`);
     const resBodyObj = await response.json();
     pageCreationInput.tag.options = resBodyObj.event_tags;
 });
@@ -53,7 +53,7 @@ async function submitPageCreation() {
     if (pageCreationInput.tag.val) formdata.append("tag", pageCreationInput.tag.val);
     if (pageCreationInput.datetime.val) formdata.append("datetime", pageCreationInput.datetime.val);
     if (pageCreationInput.content.val) formdata.append("content", pageCreationInput.content.val);
-    const response = await fetch('https://nvn1.000webhostapp.com/api/events', {
+    const response = await fetch(`${API_BASE}/events`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',

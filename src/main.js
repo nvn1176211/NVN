@@ -62,7 +62,7 @@ router.beforeEach(async (to, from) => {
   const userStore = useUserStore();
   let api_token = getCookie('api_token');
   if (api_token) {
-    const response = await fetch(`https://nvn1.000webhostapp.com/api/user?api_token=${api_token}`, {
+    const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
       headers: {
         'Accept': 'application/json',
       },
