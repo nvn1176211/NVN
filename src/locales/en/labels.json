@@ -8,6 +8,8 @@
     "createAcc": "create account",
     "username": "username",
     "password": "password",
+    "tag": "tag",
+    "tagName": "tag name",
     "email": "email",
     "startDate": "start date",
     "thumbnail": "thumbnail",

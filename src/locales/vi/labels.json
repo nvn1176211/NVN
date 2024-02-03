@@ -8,6 +8,8 @@
     "createAcc": "tạo tài khoản",
     "username": "tên người dùng",
     "password": "mật khẩu",
+    "tag": "tag",
+    "tagName": "tên tag",
     "email": "email",
     "startDate": "ngày bắt đầu",
     "thumbnail": "ảnh đại diện",

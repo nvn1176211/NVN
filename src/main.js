@@ -1,4 +1,6 @@
 import './assets/main.css'
+import "./env.js"
+import "./helper.js"
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 import { createApp } from 'vue'
@@ -13,6 +15,7 @@ app.use(pinia)
 //router
 import { useUserStore } from './stores/UserStore';
 import { createRouter, createWebHashHistory } from 'vue-router'
+// import { createRouter, createWebHistory } from 'vue-router'
 import Events from "./components/Events.vue"
 import Event from "./components/Event.vue"
 import EventCreate from "./components/EventCreate.vue"
@@ -20,6 +23,7 @@ import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
 const router = createRouter({
+  // history: createWebHistory(),
   history: createWebHashHistory(),
   routes: [
     {
