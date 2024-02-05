@@ -108,7 +108,7 @@ async function removePage() {
                         event_created_by }}</router-link>
                 </li>
                 <li v-for="item in event_another_version">
-                    <router-link :to="item.link.replace('https://nvn1.000webhostapp.com/api', '')">Created at: {{
+                    <router-link :to="`/events/other_version/${item.id}`">Created at: {{
                         item.created_at }} - Created by: {{ item.created_by }}</router-link>
                 </li>
             </ul>
