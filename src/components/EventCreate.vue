@@ -31,7 +31,7 @@ const pageCreationInput = reactive({
     },
 });
 const tagCreationInput = reactive({
-    tagName: {
+    name: {
         errMsg: null,
         isInvalid: false,
         val: null,
@@ -63,7 +63,7 @@ async function submitPageCreation() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj, input);
+            handleInvalidInput(resBodyObj, pageCreationInput);
             break;
         case 201:
             alert(t("messages.successCreateEventPage"));
@@ -75,30 +75,30 @@ async function submitPageCreation() {
 async function submitTagCreation() {
     refreshFormErrInput(tagCreationInput);
     isDisabledBtn.value = true;
-    // let formdata = new FormData();
-    // let api_token = getCookie('api_token');
-    // if (api_token) formdata.append("api_token", api_token);
-    // if (thumbnail.value.files[0]) formdata.append("thumbnail", thumbnail.value.files[0]);
-    // if (pageCreationInput.tag.val) formdata.append("tag", pageCreationInput.tag.val);
-    // if (pageCreationInput.datetime.val) formdata.append("datetime", pageCreationInput.datetime.val);
-    // if (pageCreationInput.content.val) formdata.append("content", pageCreationInput.content.val);
-    // const response = await fetch('https://nvn1.000webhostapp.com/api/events', {
-    //     method: "POST",
-    //     headers: {
-    //         'Accept': 'application/json',
-    //     },
-    //     body: formdata
-    // });
-    // const resBodyObj = await response.json();
-    // switch (response.status) {
-    //     case 422:
-    //         handleInvalidInput(resBodyObj, input);
-    //         break;
-    //     case 201:
-    //         alert(t("messages.successCreateEventPage"));
-    //         router.push('/');
-    //         break;
-    // }
+    let formdata = new FormData();
+    let api_token = getCookie('api_token');
+    if (api_token) formdata.append("api_token", api_token);
+    if (tagCreationInput.name.val) formdata.append("name", tagCreationInput.name.val);
+    const response = await fetch(`${API_BASE}/event_tags`, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+        },
+        body: formdata
+    });
+    const resBodyObj = await response.json();
+    switch (response.status) {
+        case 422:
+            handleInvalidInput(resBodyObj, tagCreationInput);
+            break;
+        case 201:
+            alert(t("messages.successCreateEventTag"));
+            router.push('/');
+            break;
+        default:
+            removeConfirmModal.hide();
+            alert(t("messages.somethingWrong"));
+    }
     isDisabledBtn.value = false;
 }
 </script>
@@ -161,9 +161,9 @@ async function submitTagCreation() {
                     <div class="col-12 col-md-6">
                         <div class="mb-3 mt-3">
                             <label for="tag" class="form-label text-capitalize">{{ $t('labels.tagName') }}:</label>
-                            <input id="tagName" :class="{ 'is-invalid': tagCreationInput.tagName.isInvalid }" class="form-control"
-                            v-model="tagCreationInput.tagName.val" type="text" name="tagName" autocomplete="off">
-                            <div class="invalid-feedback">{{ tagCreationInput.tagName.errMsg }}</div>
+                            <input id="tagName" :class="{ 'is-invalid': tagCreationInput.name.isInvalid }" class="form-control"
+                            v-model="tagCreationInput.name.val" type="text" name="tagName" autocomplete="off">
+                            <div class="invalid-feedback">{{ tagCreationInput.name.errMsg }}</div>
                         </div>
                     </div>
                 </div>

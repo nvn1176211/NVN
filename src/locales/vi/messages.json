@@ -3,6 +3,7 @@
     "successLoginMsg": "Bạn đã đăng nhập thành công!",
     "successRegisterMsg": "Bạn đã ghi danh thành công!",
     "successCreateEventPage": "Bạn đã tạo trang sự kiện lịch sử thành công!",
+    "successCreateEventTag": "Bạn đã tạo tag sự kiện lịch sử thành công!",
     "areYouSure": "Bạn có chắc không?",
     "eventPageDeleted": "Trang sự kiện đã bị xóa.",
     "forbidDeleteLastPage": "Bạn không thể xóa trang sự kiện cuối cùng.",

@@ -3,6 +3,7 @@
     "successLoginMsg": "You have successfully loged in!",
     "successRegisterMsg": "You have successfully registered!",
     "successCreateEventPage": "You have successfully created event page!",
+    "successCreateEventTag": "You have successfully created event tag!",
     "areYouSure": "Are you sure?",
     "eventPageDeleted": "Event page has been deleted.",
     "forbidDeleteLastPage": "You can't delete last event page.",
