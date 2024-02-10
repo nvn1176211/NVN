@@ -58,7 +58,11 @@ const router = createRouter({
     },
   ]
 });
+// some page need beforeEach fetch auth data for redirect as soon as
 router.beforeEach(async (to, from) => {
+  if(to.name != 'login' && to.name != 'register' && to.name != 'createEvent'){
+    return true;
+  }
   const userStore = useUserStore();
   let api_token = getCookie('api_token');
   if (api_token) {
@@ -84,6 +88,32 @@ router.beforeEach(async (to, from) => {
     || (to.name == "createEvent" && !userStore.isLoggedIn)
   ) {
     return { name: 'events' }
+  }
+})
+// only afterEach fetch auth data in specific pages for increase perfomance
+router.afterEach(async (to, from) => {
+  if(to.name != 'events' && to.name != 'event' && to.name != 'eventOtherVersion'){
+    return false;
+  }
+  const userStore = useUserStore();
+  let api_token = getCookie('api_token');
+  if (api_token) {
+    const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const resBodyObj = await response.json();
+    switch (response.status) {
+      case 200:
+        userStore.username = resBodyObj.username;
+        userStore.isAdmin = resBodyObj.is_admin;
+        userStore.isLoggedIn = true;
+        break;
+      case 401:
+        setCookieY('api_token', null, -1, '/');
+        userStore.$reset();
+    }
   }
 })
 app.use(router)

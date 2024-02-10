@@ -1,12 +1,16 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/UserStore';
+import SubmitBtnComponent from './partials/SubmitBtn.vue';
 
+const isDisabledBtn = ref(false);
 const userStore = useUserStore();
 const events = ref(null);
 const event_search = ref(null);
 const event_pages = ref(0);
 let is_search_requesting = false;
+const router = useRouter();
 
 watch(event_search, async (new_event_search) => {
 	if (is_search_requesting) return false;
@@ -24,14 +28,18 @@ watch(event_search, async (new_event_search) => {
 },
 	{ immediate: true }
 );
+function moveToCreatePage() {
+	isDisabledBtn.value = true;
+	router.push('/create_event');
+}
 </script>
 
 <template>
 	<div class="row">
 		<div class="col-12 col-md-6">
 			<div class="position-relative h-100">
-				<input id="t-search-i" class="form-control h-100" type="text" :placeholder="$t('messages.eventSearchPlaceholder')" code-val=""
-					v-model="event_search">
+				<input id="t-search-i" class="form-control h-100" type="text"
+					:placeholder="$t('messages.eventSearchPlaceholder')" code-val="" v-model="event_search">
 				<div id="s-result-popup">
 
 				</div>
@@ -44,9 +52,9 @@ watch(event_search, async (new_event_search) => {
 					<span class="text-uppercase">{{ $t('labels.pages') }}</span>
 				</div>
 				<div id="createPageCtn" v-if="userStore.isLoggedIn">
-					<router-link to="create_event" class="btn btn-primary" title="Create new page">
-						<i class="bi bi-plus-lg"></i>
-					</router-link>
+					<SubmitBtnComponent @submit="moveToCreatePage" :isDisabled="isDisabledBtn" title="Create new page">
+                        <i class="bi bi-plus-lg" v-show="!isDisabledBtn"></i>
+                    </SubmitBtnComponent>
 				</div>
 			</div>
 		</div>
@@ -57,7 +65,8 @@ watch(event_search, async (new_event_search) => {
 				<img class="card-img-top" :src="event.thumbnail">
 				<div class="card-body">
 					<h4 class="card-title">{{ event.year }}: {{ event.name }}</h4>
-					<router-link :to="`/events/${event.id}`" class="text-capitalize">{{ $t('labels.seeMore') }}</router-link>
+					<router-link :to="`/events/${event.id}`" class="text-capitalize">{{ $t('labels.seeMore')
+					}}</router-link>
 				</div>
 			</div>
 		</div>
