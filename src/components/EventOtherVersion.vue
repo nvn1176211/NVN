@@ -32,7 +32,7 @@ onMounted(async () => {
             event_name.value = event.name;
             event_content.value = event.content;
             event_thumbnail.value = event.thumbnail;
-            event_created_at.value = event.created_at;
+            event_created_at.value = event.f1_created_at;
             event_created_by.value = event.created_by;
         });
 })
@@ -78,7 +78,16 @@ async function removePage() {
             <hr class="mt-2 mb-0">
         </div>
         <div class="row">
-            <div class="col-12 col-md-6">{{ event_content }}</div>
+            <div class="col-12 col-md-6">
+                <div>
+                    <div>By {{ event_created_by }}</div>
+                    <div>Created {{ event_created_at }}</div>
+                </div>
+                <hr>
+                <div>
+                    {{ event_content }}
+                </div>
+            </div>
             <div class="col-12 col-md-6">
                 <div class="position-relative p-2 border" id="thumbnail-block">
                     <img :src="event_thumbnail" alt="" width="100%" height="auto">

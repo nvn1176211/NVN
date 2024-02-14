@@ -34,7 +34,7 @@ onMounted(async () => {
             event_name.value = event.name;
             event_content.value = event.content;
             event_thumbnail.value = event.thumbnail;
-            event_created_at.value = event.created_at;
+            event_created_at.value = event.f1_created_at;
             event_created_by.value = event.created_by;
             event_another_version.value = json.another_version;
             avClass.value = event_another_version.value.length > 0 ? '' : 'd-none';
@@ -72,7 +72,6 @@ async function removePage() {
     }
     isDisabledBtn.value = false;
 }
-
 </script>
 
 <template>
@@ -86,7 +85,16 @@ async function removePage() {
             <hr class="mt-2 mb-0">
         </div>
         <div class="row">
-            <div class="col-12 col-md-6">{{ event_content }}</div>
+            <div class="col-12 col-md-6">
+                <div>
+                    <div>By {{ event_created_by }}</div>
+                    <div>Created {{ event_created_at }}</div>
+                </div>
+                <hr>
+                <div>
+                    {{ event_content }}
+                </div>
+            </div>
             <div class="col-12 col-md-6">
                 <div class="position-relative p-2 border" id="thumbnail-block">
                     <img :src="event_thumbnail" alt="" width="100%" height="auto">
@@ -109,7 +117,7 @@ async function removePage() {
                 </li>
                 <li v-for="item in event_another_version">
                     <router-link :to="`/events/other_version/${item.id}`">Created at: {{
-                        item.created_at }} - Created by: {{ item.created_by }}</router-link>
+                        item.f1_created_at }} - Created by: {{ item.created_by }}</router-link>
                 </li>
             </ul>
         </div>
