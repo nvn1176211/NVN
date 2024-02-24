@@ -4,30 +4,38 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/UserStore';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 
+const isSearchSpinActive = ref(true);
 const isDisabledBtn = ref(false);
 const userStore = useUserStore();
-const events = ref(null);
+const eventTags = ref(null);
 const event_search = ref(null);
-const event_pages = ref(0);
+const tagPages = ref(0);
 let is_search_requesting = false;
 const router = useRouter();
 
 watch(event_search, async (new_event_search) => {
 	if (is_search_requesting) return false;
-	is_search_requesting = true;
+	search(new_event_search);
+},
+	{ immediate: true }
+);
 
-	await fetch(`${API_BASE}/events?search=${new_event_search === null ? '' : new_event_search}`)
+async function search(new_event_search) {
+	is_search_requesting = true;
+	isSearchSpinActive.value = true;
+	await fetch(`${API_BASE}/event_tags?search=${new_event_search === null ? '' : new_event_search}`)
 		.then((response) => {
 			return response.json();
 		})
 		.then((json) => {
-			events.value = json.events;
-			event_pages.value = json.events.length;
+			eventTags.value = json.eventTags;
+			tagPages.value = json.eventTags.length;
 			is_search_requesting = false;
+			isSearchSpinActive.value = false;
 		});
-},
-	{ immediate: true }
-);
+	if(event_search.value != new_event_search) search(event_search.value);
+}
+
 function moveToCreatePage() {
 	isDisabledBtn.value = true;
 	router.push('/create_event');
@@ -48,7 +56,7 @@ function moveToCreatePage() {
 		<div class="col-12 col-md-6">
 			<div class="d-flex align-items-center justify-content-end">
 				<div class="d-flex flex-column me-2">
-					<span>{{ event_pages }}</span>
+					<span>{{ tagPages }}</span>
 					<span class="text-uppercase">{{ $t('labels.pages') }}</span>
 				</div>
 				<div id="createPageCtn" v-if="userStore.isLoggedIn">
@@ -59,17 +67,21 @@ function moveToCreatePage() {
 			</div>
 		</div>
 	</div>
-	<div class="row mt-5">
-		<div class="col-12 col-md-6 mb-3" v-for="event in events">
-			<div class="event card">
-				<img class="card-img-top" :src="event.thumbnail">
-				<div class="card-body">
-					<h4 class="card-title">{{ event.year }}: {{ event.name }}</h4>
-					<router-link :to="`/events/${event.id}`" class="text-capitalize">{{ $t('labels.seeMore')
-					}}</router-link>
+	<div class="mt-5">
+		<div class="d-flex justify-content-center" v-if="isSearchSpinActive">
+			<span class="spinner-border spinner-border-sm tag-search-spin" role="status" aria-hidden="true"></span>
+		</div>
+		<div class="row" v-show="!isSearchSpinActive">
+			<div class="col-12 col-md-6 mb-3" v-for="tag in eventTags">
+				<div class="event card">
+					<img class="card-img-top" :src="tag.thumbnail">
+					<div class="card-body">
+						<h4 class="card-title">{{ tag.name }}</h4>
+						<router-link :to="`/event_tags/${tag.id}`" class="text-capitalize">{{ $t('labels.seeMore')
+						}}</router-link>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div id="events-ctn" class="row mt-5"></div>
 </template>

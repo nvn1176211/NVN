@@ -1,11 +1,12 @@
 {
+    "areYouSure": "Bạn có chắc không?",
     "eventSearchPlaceholder": "Nhập tên sự kiện...",
+    "eventPageDeleted": "Trang sự kiện đã bị xóa.",
+    "forbidDeleteLastPage": "Bạn không thể xóa trang sự kiện cuối cùng.",
+    "loginRequired": "Bạn cần login trước khi thực hiện hành động này!",
     "successLoginMsg": "Bạn đã đăng nhập thành công!",
     "successRegisterMsg": "Bạn đã ghi danh thành công!",
     "successCreateEventPage": "Bạn đã tạo trang sự kiện lịch sử thành công!",
     "successCreateEventTag": "Bạn đã tạo tag sự kiện lịch sử thành công!",
-    "areYouSure": "Bạn có chắc không?",
-    "eventPageDeleted": "Trang sự kiện đã bị xóa.",
-    "forbidDeleteLastPage": "Bạn không thể xóa trang sự kiện cuối cùng.",
     "somethingWrong": "Có gì đó sai sai"
 }

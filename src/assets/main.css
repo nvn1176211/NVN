@@ -1,6 +1,39 @@
 @import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
 
-.cursor-pointer{
+html {
+    overflow-y: scroll;
+}
+
+body.modal-open {
+    padding-right: calc(var(--bs-gutter-x) * .5) !important;/* keep padding right when modal-open */
+}
+
+.cursor-pointer {
     cursor: pointer;
+}
+
+.round-btn {
+    border-radius: 50% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.white-btn {
+    background-color: white;
+    color: black;
+}
+
+.text-orange {
+    color: #f5c518;
+}
+
+.bg-gray {
+    background-color: lightgray;
+}
+
+.tag-search-spin{
+    width: 30px; 
+    height: 30px;
 }

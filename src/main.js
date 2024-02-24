@@ -17,7 +17,7 @@ import { useUserStore } from './stores/UserStore';
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import Events from "./components/Events.vue"
-import Event from "./components/Event.vue"
+import EventTag from "./components/EventTag.vue"
 import EventCreate from "./components/EventCreate.vue"
 import EventOtherVersion from "./components/EventOtherVersion.vue"
 import Login from "./components/Login.vue"
@@ -46,10 +46,15 @@ const router = createRouter({
       name: 'createEvent',
       component: EventCreate
     },
+    // {
+    //   path: '/events/:id',
+    //   name: 'event',
+    //   component: Event
+    // },
     {
-      path: '/events/:id',
-      name: 'event',
-      component: Event
+      path: '/event_tags/:id',
+      name: 'eventTag',
+      component: EventTag
     },
     {
       path: '/events/other_version/:id',
@@ -60,7 +65,7 @@ const router = createRouter({
 });
 // some page need beforeEach fetch auth data for redirect as soon as
 router.beforeEach(async (to, from) => {
-  if(to.name != 'login' && to.name != 'register' && to.name != 'createEvent'){
+  if(to.name != 'login' && to.name != 'register' && to.name != 'createEvent' && to.name != 'eventTag'){
     return true;
   }
   const userStore = useUserStore();
@@ -92,7 +97,7 @@ router.beforeEach(async (to, from) => {
 })
 // only afterEach fetch auth data in specific pages for increase perfomance
 router.afterEach(async (to, from) => {
-  if(to.name != 'events' && to.name != 'event' && to.name != 'eventOtherVersion'){
+  if(to.name != 'events' && to.name != 'eventOtherVersion'){
     return false;
   }
   const userStore = useUserStore();
