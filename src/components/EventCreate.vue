@@ -39,9 +39,9 @@ const tagCreationInput = reactive({
 });
 const isDisabledBtn = ref(false);
 onMounted(async () => {
-    const response = await fetch(`${API_BASE}/event_tags`);
+    const response = await fetch(`${API_BASE}/simple_event_tags`);
     const resBodyObj = await response.json();
-    pageCreationInput.tag.options = resBodyObj.event_tags;
+    pageCreationInput.tag.options = resBodyObj.eventTags;
 });
 async function submitPageCreation() {
     refreshFormErrInput(pageCreationInput);

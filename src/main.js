@@ -9,8 +9,7 @@ const app = createApp(App)
 
 //store
 import { createPinia } from 'pinia'
-const pinia = createPinia()
-app.use(pinia)
+app.use(createPinia())
 
 //router
 import { useUserStore } from './stores/UserStore';
