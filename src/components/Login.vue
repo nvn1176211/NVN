@@ -9,6 +9,7 @@ const { t } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 const isDisabledBtn = ref(false);
+const isNotExactCredential = ref(false);
 const input = reactive({
     username: {
         errMsg: null,
@@ -21,8 +22,9 @@ const input = reactive({
         val: null,
     }
 });
-async function login(){
+async function login() {
     refreshFormErrInput(input);
+    isNotExactCredential.value = false;
     isDisabledBtn.value = true;
     let formdata = new FormData();
     if (input.username.val) formdata.append("username", input.username.val);
@@ -39,12 +41,15 @@ async function login(){
         case 422:
             handleInvalidInput(resBodyObj, input);
             break;
+        case 401:
+            isNotExactCredential.value = true;
+            break;
         case 200:
             alert(t("messages.successLoginMsg"));
             setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
-			userStore.isAdmin = resBodyObj.isAdmin;
-			userStore.isLoggedIn = true;
+            userStore.isAdmin = resBodyObj.isAdmin;
+            userStore.isLoggedIn = true;
             router.push('/');
             break;
     }
@@ -62,20 +67,23 @@ async function login(){
                 <form method="post" id="loginForm">
                     <div class="mb-3 mt-3">
                         <label class="form-label text-capitalize">{{ $t("labels.username") }}:</label>
-                        <input :class="{ 'is-invalid': input.username.isInvalid }" v-model="input.username.val" class="form-control" type="text" name="username" autocomplete="off">
+                        <input :class="{ 'is-invalid': input.username.isInvalid }" v-model="input.username.val"
+                            class="form-control" type="text" name="username" autocomplete="off">
                         <div class="invalid-feedback">{{ input.username.errMsg }}</div>
                     </div>
-                    <div class="mb-5 mt-3">
+                    <div class="mt-3">
                         <label class="form-label text-capitalize">{{ $t("labels.password") }}:</label>
-                        <input :class="{ 'is-invalid': input.password.isInvalid }" v-model="input.password.val" class="form-control" type="text" name="password" autocomplete="off">
+                        <input :class="{ 'is-invalid': input.password.isInvalid }" v-model="input.password.val"
+                            class="form-control" type="text" name="password" autocomplete="off">
                         <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="alert alert-danger mt-2" role="alert" v-show="isNotExactCredential">{{ $t("messages.notExactCredential") }}</div>
+                    <div class="d-flex justify-content-between mt-5">
                         <router-link to="/register" class="text-capitalize">{{ $t("labels.createAcc") }}</router-link>
-                        <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn" class="text-capitalize">{{ $t("labels.login") }}</SubmitBtnComponent>
+                        <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn" class="text-capitalize">{{
+                            $t("labels.login") }}</SubmitBtnComponent>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-</template>
+</div></template>

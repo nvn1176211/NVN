@@ -8,7 +8,6 @@ export const useUserStore = defineStore('user', () => {
     function $reset() {
         isLoggedIn.value = false
         username.value = null
-        id.value = null
         isAdmin.value = false
     }
     return { $reset, isLoggedIn, username, isAdmin }
