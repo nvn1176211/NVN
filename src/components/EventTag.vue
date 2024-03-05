@@ -1,13 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import ToggleBtnComponent from './partials/ToggleBtn.vue';
 import VotesComponent from './partials/Votes.vue';
 import { useUserStore } from '../stores/UserStore';
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const userStore = useUserStore();
 const route = useRoute();
+const router = useRouter();
 const events = ref([]);
 const tag_id = route.params.id;
 const event_tag_name = ref(null);
@@ -15,6 +18,7 @@ const isDisabledBtn = ref(false);
 const activePageIndex = ref(0);
 const isLoadingSpinActive = ref(true);
 let removeConfirmModal = null;
+let pendingRemoveEventId = null;
 onMounted(async () => {
     removeConfirmModal = new bootstrap.Modal(document.getElementById('removeConfirmModal'), {
         keyboard: false
@@ -43,24 +47,24 @@ async function download_thumbnail(event_thumbnail_url) {
     URL.revokeObjectURL(href);
 }
 async function removePage() {
-    // isDisabledBtn.value = true;
-    // let api_token = getCookie('api_token');
-    // const response = await fetch(`${API_BASE}/events/${tag_id}/delete?api_token=${api_token}`);
-    // switch (response.status) {
-    //     case 200:
-    //         removeConfirmModal.hide();
-    //         alert(t("messages.eventPageDeleted"));
-    //         router.push('/');
-    //         break;
-    //     case 403:
-    //         removeConfirmModal.hide();
-    //         alert(t("messages.forbidDeleteLastPage"));
-    //         break;
-    //     default:
-    //         removeConfirmModal.hide();
-    //         alert(t("messages.somethingWrong"));
-    // }
-    // isDisabledBtn.value = false;
+    isDisabledBtn.value = true;
+    let api_token = getCookie('api_token');
+    const response = await fetch(`${API_BASE}/events/${pendingRemoveEventId}/delete?api_token=${api_token}`);
+    switch (response.status) {
+        case 200:
+            removeConfirmModal.hide();
+            alert(t("messages.eventPageDeleted"));
+            router.push('/');
+            break;
+        default:
+            removeConfirmModal.hide();
+            alert(t("messages.somethingWrong"));
+    }
+    isDisabledBtn.value = false;
+}
+function confirmRemove(eventId) {
+    pendingRemoveEventId = eventId;
+    removeConfirmModal.show();
 }
 function togglePage(index) {
     activePageIndex.value = activePageIndex.value == index ? -1 : index;
@@ -76,15 +80,14 @@ function togglePage(index) {
             <div class="mb-4">
                 <div id="title-block" class="d-flex justify-content-between align-items-center">
                     <h2>{{ event_tag_name }}</h2>
-                    <button v-if="userStore.isAdmin" class="btn btn-danger" data-bs-toggle="modal"
-                        data-bs-target="#removeConfirmModal" id="removeEventPageBtn"><i class="bi bi-trash"></i></button>
                 </div>
                 <hr class="mt-2 mb-0">
             </div>
         </div>
         <div>
             <div>
-                <div v-for="(event, index) in events" class="mb-4" :class="{ 'cursor-pointer': index != activePageIndex }">
+                <div v-for="(event, index) in events" class="mb-4"
+                    :class="{ 'cursor-pointer': index != activePageIndex }">
                     <div class="event card">
                         <div class="card-body">
                             <div class="row">
@@ -93,13 +96,17 @@ function togglePage(index) {
                                         <div class="d-flex flex-column align-items-center me-3">
                                             <ToggleBtnComponent :target="index" :activeTargetIndex="activePageIndex"
                                                 @toggle="togglePage(index)"></ToggleBtnComponent>
+                                            <button v-if="userStore.isAdmin" @click="confirmRemove(event.id)"
+                                                class="btn btn-danger mt-3"><i class="bi bi-trash"></i></button>
                                         </div>
                                         <div>
                                             <div>
                                                 <div>By {{ event.author_name }}</div>
                                                 <div>Created {{ event.f1_created_at }}</div>
-                                                <VotesComponent :event_id="event.id" :votes="event.votes"
-                                                    :voted="event.voted == 'yes' ? true : false"></VotesComponent>
+                                                <div class="mt-2">
+                                                    <VotesComponent :event_id="event.id" :votes="event.votes"
+                                                        :voted="event.voted == 'yes' ? true : false"></VotesComponent>
+                                                </div>
                                             </div>
                                             <div v-show="index == activePageIndex">
                                                 <hr>
@@ -130,11 +137,12 @@ function togglePage(index) {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title text-center" id="removeConfirmModalLabel">{{ $t("messages.areYouSure") }}</h5>
+                    <h5 class="modal-title text-center" id="removeConfirmModalLabel">{{ $t("messages.areYouSure") }}
+                    </h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{
-                        $t("labels.no") }}</button>
+        $t("labels.no") }}</button>
                     <SubmitBtnComponent @submit="removePage" :isDisabled="isDisabledBtn" class="text-capitalize">{{
                         $t("labels.yes") }}</SubmitBtnComponent>
                 </div>
