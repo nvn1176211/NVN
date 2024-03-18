@@ -15,10 +15,11 @@ app.use(createPinia())
 import { useUserStore } from './stores/UserStore';
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-import Events from "./components/Events.vue"
+import Pages from "./components/Pages.vue"
 import EventTag from "./components/EventTag.vue"
-import EventCreate from "./components/EventCreate.vue"
-import EventOtherVersion from "./components/EventOtherVersion.vue"
+import PageCreation from './components/PageCreation.vue';
+import Article from "./components/Article.vue"
+import Discussion from "./components/Discussion.vue"
 import Login from "./components/Login.vue"
 import Register from "./components/Register.vue"
 const router = createRouter({
@@ -27,8 +28,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'events',
-      component: Events
+      name: 'pages',
+      component: Pages
     },
     {
       path: '/login',
@@ -41,9 +42,9 @@ const router = createRouter({
       component: Register
     },
     {
-      path: '/create_event',
-      name: 'createEvent',
-      component: EventCreate
+      path: '/create_page',
+      name: 'createPage',
+      component: PageCreation
     },
     // {
     //   path: '/events/:id',
@@ -56,19 +57,24 @@ const router = createRouter({
       component: EventTag
     },
     {
-      path: '/events/other_version/:id',
-      name: 'eventOtherVersion',
-      component: EventOtherVersion
+      path: '/articles/:id',
+      name: 'article',
+      component: Article
+    },
+    {
+      path: '/discussions/:id',
+      name: 'discussion',
+      component: Discussion
     },
   ]
 });
 // some page need beforeEach fetch auth data for redirect as soon as
 router.beforeEach(async (to, from) => {
-  if(to.name != 'login' && to.name != 'register' && to.name != 'createEvent' && to.name != 'eventTag'){
+  if(to.name != 'login' && to.name != 'register' && to.name != 'createPage' && to.name != 'article' && to.name != 'discussion'){
     return true;
   }
   const userStore = useUserStore();
-  let api_token = getCookie('api_token');
+  let api_token = helpers.getCookie('api_token');
   if (api_token) {
     const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
       headers: {
@@ -83,24 +89,24 @@ router.beforeEach(async (to, from) => {
         userStore.isLoggedIn = true;
         break;
       case 401:
-        setCookieY('api_token', null, -1, '/');
+        helpers.setCookieY('api_token', null, -1, '/');
         userStore.$reset();
     }
   }
   if (
     ((to.name == "login" || to.name == 'register') && userStore.isLoggedIn)
-    || (to.name == "createEvent" && !userStore.isLoggedIn)
+    || (to.name == "createPage" && !userStore.isLoggedIn)
   ) {
     return { name: 'events' }
   }
 })
 // only afterEach fetch auth data in specific pages for increase perfomance
 router.afterEach(async (to, from) => {
-  if(to.name != 'events' && to.name != 'eventOtherVersion'){
+  if(to.name != 'pages'){
     return false;
   }
   const userStore = useUserStore();
-  let api_token = getCookie('api_token');
+  let api_token = helpers.getCookie('api_token');
   if (api_token) {
     const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
       headers: {
@@ -115,7 +121,7 @@ router.afterEach(async (to, from) => {
         userStore.isLoggedIn = true;
         break;
       case 401:
-        setCookieY('api_token', null, -1, '/');
+        helpers.setCookieY('api_token', null, -1, '/');
         userStore.$reset();
     }
   }

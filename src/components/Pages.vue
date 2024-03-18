@@ -7,9 +7,9 @@ import SubmitBtnComponent from './partials/SubmitBtn.vue';
 const isSearchSpinActive = ref(true);
 const isDisabledBtn = ref(false);
 const userStore = useUserStore();
-const eventTags = ref(null);
+const pages = ref([]);
 const event_search = ref(null);
-const tagPages = ref(0);
+const pagesCount = ref(0);
 let is_search_requesting = false;
 const router = useRouter();
 
@@ -28,17 +28,18 @@ async function search(new_event_search) {
 			return response.json();
 		})
 		.then((json) => {
-			eventTags.value = json.eventTags;
-			tagPages.value = json.eventTags.length;
+			pages.value = json.pages;
+			pagesCount.value = json.pages.length;
 			is_search_requesting = false;
 			isSearchSpinActive.value = false;
 		});
-	if(event_search.value != new_event_search) search(event_search.value);
+	if (event_search.value != new_event_search) search(event_search.value);
 }
 
 function moveToCreatePage() {
 	isDisabledBtn.value = true;
-	router.push('/create_event');
+	// router.push('/create_event');
+	router.push({ name: 'createPage' });
 }
 </script>
 
@@ -47,7 +48,7 @@ function moveToCreatePage() {
 		<div class="col-12 col-md-6">
 			<div class="position-relative h-100">
 				<input id="t-search-i" class="form-control h-100" type="text"
-					:placeholder="$t('messages.eventSearchPlaceholder')" code-val="" v-model="event_search">
+					:placeholder="$t('messages.pageSearchPlaceholder')" code-val="" v-model="event_search">
 				<div id="s-result-popup">
 
 				</div>
@@ -56,13 +57,13 @@ function moveToCreatePage() {
 		<div class="col-12 col-md-6">
 			<div class="d-flex align-items-center justify-content-end">
 				<div class="d-flex flex-column me-2">
-					<span>{{ tagPages }}</span>
+					<span>{{ pagesCount }}</span>
 					<span class="text-uppercase">{{ $t('labels.pages') }}</span>
 				</div>
 				<div id="createPageCtn" v-if="userStore.isLoggedIn">
 					<SubmitBtnComponent @submit="moveToCreatePage" :isDisabled="isDisabledBtn" title="Create new page">
-                        <i class="bi bi-plus-lg" v-show="!isDisabledBtn"></i>
-                    </SubmitBtnComponent>
+						<i class="bi bi-plus-lg" v-show="!isDisabledBtn"></i>
+					</SubmitBtnComponent>
 				</div>
 			</div>
 		</div>
@@ -72,13 +73,20 @@ function moveToCreatePage() {
 			<span class="spinner-border spinner-border-sm tag-search-spin" role="status" aria-hidden="true"></span>
 		</div>
 		<div class="row" v-show="!isSearchSpinActive">
-			<div class="col-12 col-md-6 mb-3" v-for="tag in eventTags">
+			<div class="col-12 col-md-6 mb-3" v-for="page in pages">
 				<div class="event card">
-					<img class="card-img-top" :src="tag.thumbnail">
+					<img class="card-img-top" :src="page.thumbnail">
 					<div class="card-body">
-						<h4 class="card-title">{{ tag.name }}</h4>
-						<router-link :to="`/${tag.type}/${tag.id}`" class="text-capitalize">{{ $t('labels.seeMore')
-						}}</router-link>
+						<div class="d-flex justify-content-between">
+							<div>
+								<h4 class="card-title">{{ page.name }}</h4>
+								<router-link :to="`/${page.type}/${page.id}`" class="text-capitalize">{{ $t('labels.seeMore')
+									}}</router-link>
+							</div>
+							<div class="ms-3">
+								<span class="badge bg-info text-capitalize">{{ page.type }}</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

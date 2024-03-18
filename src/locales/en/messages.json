@@ -1,12 +1,16 @@
 {
+    "addAOpinion": "Add a opinion",
     "areYouSure": "Are you sure?",
-    "eventSearchPlaceholder": "Enter event name...",
+    "pageSearchPlaceholder": "Enter page name...",
     "eventPageDeleted": "Event page has been deleted.",
     "forbidDeleteLastPage": "You can't delete last event page.",
     "loginRequired": "You need to login before performing this action!",
     "notExactCredential": "Make sure you type your email and password correctly!",
     "successLoginMsg": "You have successfully loged in!",
     "successRegisterMsg": "You have successfully registered!",
+    "successCreateArticle": "You have successfully created article!",
+    "successCreateDiscussion": "You have successfully created discussion!",
+    "successCreateOpinion": "You have successfully created opinion!",
     "successCreateEventPage": "You have successfully created event page!",
     "successCreateEventTag": "You have successfully created event tag!",
     "somethingWrong": "Something is wrong"

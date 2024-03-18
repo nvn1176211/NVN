@@ -44,10 +44,10 @@ onMounted(async () => {
     pageCreationInput.tag.options = resBodyObj.eventTags;
 });
 async function submitPageCreation() {
-    refreshFormErrInput(pageCreationInput);
+    helpers.refreshFormErrInput(pageCreationInput);
     isDisabledBtn.value = true;
     let formdata = new FormData();
-    let api_token = getCookie('api_token');
+    let api_token = helpers.getCookie('api_token');
     if (api_token) formdata.append("api_token", api_token);
     if (thumbnail.value.files[0]) formdata.append("thumbnail", thumbnail.value.files[0]);
     if (pageCreationInput.tag.val) formdata.append("tag", pageCreationInput.tag.val);
@@ -63,7 +63,7 @@ async function submitPageCreation() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj, pageCreationInput);
+            helpers.handleInvalidInput(resBodyObj, pageCreationInput);
             break;
         case 201:
             alert(t("messages.successCreateEventPage"));
@@ -73,10 +73,10 @@ async function submitPageCreation() {
     isDisabledBtn.value = false;
 }
 async function submitTagCreation() {
-    refreshFormErrInput(tagCreationInput);
+    helpers.refreshFormErrInput(tagCreationInput);
     isDisabledBtn.value = true;
     let formdata = new FormData();
-    let api_token = getCookie('api_token');
+    let api_token = helpers.getCookie('api_token');
     if (api_token) formdata.append("api_token", api_token);
     if (tagCreationInput.name.val) formdata.append("name", tagCreationInput.name.val);
     const response = await fetch(`${API_BASE}/event_tags`, {
@@ -89,7 +89,7 @@ async function submitTagCreation() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj, tagCreationInput);
+            helpers.handleInvalidInput(resBodyObj, tagCreationInput);
             break;
         case 201:
             alert(t("messages.successCreateEventTag"));

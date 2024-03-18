@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, reactive } from 'vue';
 import { useUserStore } from '../../stores/UserStore';
+// import LoginRequiredModalComponent from './LoginRequiredModal.vue';
 
+// const loginRequiredModalRef = ref(null);
 const userStore = useUserStore();
-const props = defineProps(['voted', 'votes', 'event_id']);
+const props = defineProps(['voted', 'votes', 'id', 'sector']);
 const emit = defineEmits(['vote'])
 const isPause = ref(false);
 const change = ref(0);
@@ -15,18 +17,15 @@ const voted = computed(() => { return currentVote.value !== null ? currentVote.v
 async function vote() {
     isPause.value = true;
     if (!userStore.isLoggedIn) {
-        let myModal = new bootstrap.Modal(document.getElementById('loginRquiredModal'), {
-            keyboard: false
-        });
-        myModal.toggle();
+        loginRquiredModal.show();
         isPause.value = false;
         return false;
     }
-    let api_token = getCookie('api_token');
+    let api_token = helpers.getCookie('api_token');
     let formdata = new FormData();
     if (api_token) formdata.append("api_token", api_token);
-    if (props.event_id) formdata.append("event_id", props.event_id);
-    let response = await fetch(`${API_BASE}/votes/toggle`, {
+    if (props.id) formdata.append("id", props.id);
+    let response = await fetch(`${API_BASE}/${props.sector}/toggle`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -45,7 +44,7 @@ async function vote() {
             isPause.value = false;
             break;
         default:
-            console.log("Error");
+            console.log("Something is wrong!");
     }
 }
 function blurLook() {
@@ -66,20 +65,5 @@ function clearLook() {
         <i class="bi me-2 bi-hand-thumbs-up" v-show="!isPause && !voted"></i>
         <span v-show="!isPause">{{ votes + change }}</span>
     </div>
-    <div class="modal fade" id="loginRquiredModal" tabindex="-1" aria-labelledby="loginRquiredModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h5 class="modal-title text-center" id="loginRquiredModalLabel">{{ $t("messages.loginRequired") }}</h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary text-capitalize" data-bs-dismiss="modal">{{
-                        $t("labels.close") }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- <LoginRequiredModalComponent ref="loginRequiredModalRef" /> -->
 </template>
-
-<style></style>

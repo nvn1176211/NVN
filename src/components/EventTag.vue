@@ -23,7 +23,7 @@ onMounted(async () => {
     removeConfirmModal = new bootstrap.Modal(document.getElementById('removeConfirmModal'), {
         keyboard: false
     })
-    let api_token = getCookie('api_token') ?? '';
+    let api_token = helpers.getCookie('api_token') ?? '';
     await fetch(`${API_BASE}/event_tags/${tag_id}?api_token=${api_token}`)
         .then((response) => {
             return response.json();
@@ -48,7 +48,7 @@ async function download_thumbnail(event_thumbnail_url) {
 }
 async function removePage() {
     isDisabledBtn.value = true;
-    let api_token = getCookie('api_token');
+    let api_token = helpers.getCookie('api_token');
     const response = await fetch(`${API_BASE}/events/${pendingRemoveEventId}/delete?api_token=${api_token}`);
     switch (response.status) {
         case 200:

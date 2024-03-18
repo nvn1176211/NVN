@@ -27,7 +27,7 @@ const input = reactive({
 });
 const isDisabledBtn = ref(false);
 async function register() {
-    refreshFormErrInput(input);
+    helpers.refreshFormErrInput(input);
     isDisabledBtn.value = true;
     let formdata = new FormData();
     if (input.email.val) formdata.append("email", input.email.val);
@@ -43,11 +43,11 @@ async function register() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj, input);
+            helpers.handleInvalidInput(resBodyObj, input);
             break;
         case 201:
             alert(t("messages.successRegisterMsg"));
-            setCookieY('api_token', resBodyObj.api_token, 1, '/');
+            helpers.setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
 			userStore.isAdmin = resBodyObj.isAdmin;
 			userStore.isLoggedIn = true;

@@ -9,7 +9,7 @@ function darkModeSwitch() {
   html.setAttribute('data-bs-theme', html.getAttribute('data-bs-theme') == 'dark' ? '' : 'dark');
 }
 function logout(){
-  setCookieY('api_token', 'value', -1, '/');
+  helpers.setCookieY('api_token', 'value', -1, '/');
   userStore.$reset();
   router.push('/'); 
 }

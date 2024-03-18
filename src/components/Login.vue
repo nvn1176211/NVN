@@ -23,7 +23,7 @@ const input = reactive({
     }
 });
 async function login() {
-    refreshFormErrInput(input);
+    helpers.refreshFormErrInput(input);
     isNotExactCredential.value = false;
     isDisabledBtn.value = true;
     let formdata = new FormData();
@@ -39,14 +39,14 @@ async function login() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            handleInvalidInput(resBodyObj, input);
+            helpers.handleInvalidInput(resBodyObj, input);
             break;
         case 401:
             isNotExactCredential.value = true;
             break;
         case 200:
             alert(t("messages.successLoginMsg"));
-            setCookieY('api_token', resBodyObj.api_token, 1, '/');
+            helpers.setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
             userStore.isAdmin = resBodyObj.isAdmin;
             userStore.isLoggedIn = true;
