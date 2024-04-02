@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import ToggleBtnComponent from './partials/ToggleBtn.vue';
 import VotesComponent from './partials/Votes.vue';
 import ChatsOverviewComponent from './partials/ChatsOverview.vue';
+import OpinionCKEditorComponent from './partials/OpinionCKEditor.vue';
 import { useUserStore } from '../stores/UserStore';
 import { useI18n } from "vue-i18n";
 
@@ -13,7 +14,7 @@ const userStore = useUserStore();
 const route = useRoute();
 const discussion_id = route.params.id;
 const discussionName = ref(null);
-const discussionContent = ref(null);
+const discussionContentRef = ref(null);
 const discussionVotes = ref(0);
 const discussionVoted = ref('no');
 const discussionAuthorName = ref(null);
@@ -23,13 +24,13 @@ const isDisabledBtn = ref(false);
 const activePageIndex = ref(0);
 const isLoadingSpinActive = ref(true);
 const isShowOpinionCompose = ref(false);
-const opinionInputRef = ref(null);
 const isSaveOpinionLoading = ref(false);
-const opinion = reactive({
+const opinionCKEditorComponentRef = ref(null);
+const inputs = reactive({
     content: {
         errMsg: null,
         isInvalid: false,
-        val: null,
+        val: '',
     },
 });
 let removeConfirmModal = null;
@@ -45,7 +46,7 @@ onMounted(async () => {
         })
         .then((json) => {
             discussionName.value = json.discussion.name;
-            discussionContent.value = json.discussion.content;
+            discussionContentRef.value.innerHTML = json.discussion.content;
             discussionVotes.value = json.discussion.votes;
             discussionVoted.value = json.discussion.voted;
             discussionAuthorName.value = json.discussion.author_name;
@@ -60,21 +61,19 @@ function addOpinion() {
         return false;
     }
     isShowOpinionCompose.value = true;
-    setTimeout(function () {
-        opinionInputRef.value.focus();
-    }, 200)
 }
 function closeOpinionCompose() {
     isShowOpinionCompose.value = false;
 }
 async function saveOpinion() {
-    helpers.refreshFormErrInput(opinion);
+    helpers.refreshFormErrInput(inputs);
     isSaveOpinionLoading.value = true;
     let formdata = new FormData();
     let api_token = helpers.getCookie('api_token');
+    inputs.content.val = opinionCKEditorComponentRef.value.content;
     formdata.append("discussion_id", discussion_id);
     if (api_token) formdata.append("api_token", api_token);
-    if (opinionInputRef.value.value) formdata.append("content", opinionInputRef.value.value);
+    if (inputs.content.val) formdata.append("content", inputs.content.val);
     const response = await fetch(OPINIONS_CREATION_API, {
         method: "POST",
         headers: {
@@ -85,14 +84,14 @@ async function saveOpinion() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            helpers.handleInvalidInput(resBodyObj, opinion, ['discussion_id']);
+            helpers.handleInvalidInput(resBodyObj, inputs, ['discussion_id'], ['content']);
             isSaveOpinionLoading.value = false;
             break;
         case 201:
             alert(t("messages.successCreateOpinion"));
             closeOpinionCompose();
             isSaveOpinionLoading.value = false;
-            opinionInputRef.value.value = null;
+            opinionCKEditorComponentRef.value.setData('');
             opinions.value.push(resBodyObj);
             activePageIndex.value = opinions.value.length - 1;
             setTimeout(function(){
@@ -162,7 +161,7 @@ function togglePage(index) {
                         :voted="discussionVoted == 'yes' ? true : false"></VotesComponent>
                     <ChatsOverviewComponent :numberOfOpinions="opinions.length" class="ms-2"></ChatsOverviewComponent>
                 </div>
-                <div>{{ discussionContent }}</div>
+                <div class="ck-content" ref="discussionContentRef"></div>
             </div>
         </div>
         <div class="mb-5">
@@ -170,10 +169,7 @@ function togglePage(index) {
                 <button class="btn btn-primary" @click="addOpinion">{{ $t("messages.addAOpinion") }}</button>
             </div>
             <div class="border rounded" v-show="isShowOpinionCompose">
-                <textarea ref="opinionInputRef" id="opinion" :class="{ 'is-invalid': opinion.content.isInvalid }"
-                    class="form-control border-top-0 border-start-0 border-end-0" cols="30" rows="2" name="opinion"
-                    autocomplete="off"></textarea>
-                <div class="invalid-feedback ps-2">{{ opinion.content.errMsg }}</div>
+                <OpinionCKEditorComponent ref="opinionCKEditorComponentRef" :name="'content'" :isInvalid="inputs.content.isInvalid" :errMsg="inputs.content.errMsg" />
                 <div class="p-2 d-flex justify-content-end">
                     <button class="btn btn-secondary me-2" @click="closeOpinionCompose">{{ $t("labels.close")
                         }}</button>
@@ -209,7 +205,7 @@ function togglePage(index) {
                                     </div>
                                     <div v-show="index == activePageIndex">
                                         <hr>
-                                        {{ opinion.content }}
+                                        <div class="ck-content" v-html="opinion.content"></div>
                                     </div>
                                 </div>
                             </div>

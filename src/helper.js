@@ -13,17 +13,24 @@ window.helpers = {
     for (const key in input) {
       input[key].isInvalid = false;
     }
+    document.querySelectorAll('.ck-editor__main').forEach((elm)=>{
+      elm.style.borderColor = 'rgb(204, 206, 209)';
+    })
   },
   /**
    * @param Object errors
    * @param Object input
    * @param Array ignoreInputs
+   * @param Array ckFields
    * @return Void
    */
-  handleInvalidInput: (errors, input, ignoreInputs) => {
+  handleInvalidInput: (errors, input, ignoreInputs, ckFields) => {
     let errInputObj = errors.errors;
     for (const key in errInputObj) {
-      if(ignoreInputs.indexOf(key) != -1) continue;
+      if(ignoreInputs && ignoreInputs.indexOf(key) != -1) continue;
+      if(ckFields && ckFields.indexOf(key) != -1){
+        document.querySelector('#ckeditor-ctn-' + ckFields[ckFields.indexOf(key)] + ' .ck-editor__main').style.borderColor = 'red';
+      };
       input[key].isInvalid = true;
       input[key].errMsg = errInputObj[key][0];
     }

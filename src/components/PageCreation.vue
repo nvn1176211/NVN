@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
+import PageCKEditorComponent from './partials/PageCKEditor.vue';
 import { useI18n } from "vue-i18n";
 import { useRouter } from 'vue-router';
 
@@ -9,6 +10,7 @@ const router = useRouter();
 const thumbnail = ref(null);
 const pageTypes = PAGE_TYPES;
 const typeInput = ref(pageTypes.ARTICLES);
+const pageCKEditorComponentRef = ref(null);
 const inputs = reactive({
     thumbnail: {
         errMsg: null,
@@ -18,7 +20,7 @@ const inputs = reactive({
     content: {
         errMsg: null,
         isInvalid: false,
-        val: null,
+        val: '',
     },
     name: {
         errMsg: null,
@@ -33,6 +35,7 @@ async function submitPageCreation() {
     let formdata = new FormData();
     let api_token = helpers.getCookie('api_token');
     let successMsg;
+    inputs.content.val = pageCKEditorComponentRef.value.content;
     if (api_token) formdata.append("api_token", api_token);
     if (thumbnail.value.files[0]) formdata.append("thumbnail", thumbnail.value.files[0]);
     if (inputs.content.val) formdata.append("content", inputs.content.val);
@@ -58,7 +61,7 @@ async function submitPageCreation() {
     const resBodyObj = await response.json();
     switch (response.status) {
         case 422:
-            helpers.handleInvalidInput(resBodyObj, inputs);
+            helpers.handleInvalidInput(resBodyObj, inputs, [], ['content']);
             isDisabledBtn.value = false;
             break;
         case 201:
@@ -87,8 +90,8 @@ async function submitPageCreation() {
             <div class="col-12 col-md-6">
                 <div class="mb-3 mt-3">
                     <label for="name" class="form-label text-capitalize">{{ $t('labels.name') }}:</label>
-                    <input :class="{ 'is-invalid': inputs.name.isInvalid }" ref="name" type="text" v-model="inputs.name.val"
-                        id="name" name="name" class="form-control">
+                    <input :class="{ 'is-invalid': inputs.name.isInvalid }" ref="name" type="text"
+                        v-model="inputs.name.val" id="name" name="name" class="form-control">
                     <div class="invalid-feedback">{{ inputs.name.errMsg }}</div>
                 </div>
             </div>
@@ -103,10 +106,7 @@ async function submitPageCreation() {
         </div>
         <div class="mb-3 mt-3">
             <label for="content" class="form-label text-capitalize">{{ $t('labels.content') }}:</label>
-            <textarea :class="{ 'is-invalid': inputs.content.isInvalid }"
-                v-model="inputs.content.val" id="content" class="form-control" cols="30" rows="10"
-                name="content" autocomplete="off"></textarea>
-            <div class="invalid-feedback">{{ inputs.content.errMsg }}</div>
+            <PageCKEditorComponent ref="pageCKEditorComponentRef" :name="'content'" :isInvalid="inputs.content.isInvalid" :errMsg="inputs.content.errMsg" />
         </div>
         <div class="d-flex justify-content-end">
             <SubmitBtnComponent @submit="submitPageCreation" :isDisabled="isDisabledBtn" class="text-capitalize">{{

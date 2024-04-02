@@ -16,9 +16,9 @@ const articleAuthorName = ref(null);
 const articleCreatedAt = ref(null);
 const articleVotes = ref(0);
 const articleVoted = ref('no');
-const content = ref(null);
 const isDisabledBtn = ref(false);
 const isLoadingSpinActive = ref(true);
+const contentRef = ref(null);
 let removeConfirmModal = null;
 let pendingRemovetId = null;
 onMounted(async () => {
@@ -31,7 +31,7 @@ onMounted(async () => {
             return response.json();
         })
         .then((json) => {
-            content.value = json.content;
+            contentRef.value.innerHTML = json.content;
             articleName.value = json.name;
             articleVotes.value = json.votes;
             articleVoted.value = json.voted;
@@ -84,11 +84,7 @@ function confirmRemove(id) {
                 </div>
             </div>
         </div>
-        <div>
-            <p>
-                {{ content }}
-            </p>
-        </div>
+        <div class="ck-content" ref="contentRef"></div>
     </div>
     <div class="modal fade" id="removeConfirmModal" tabindex="-1" aria-labelledby="removeConfirmModalLabel"
         aria-hidden="true">

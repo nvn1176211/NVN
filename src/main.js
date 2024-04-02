@@ -1,8 +1,8 @@
 import './assets/main.css'
 import "./env.js"
 import "./helper.js"
-import * as bootstrap from 'bootstrap';
-window.bootstrap = bootstrap;
+import * as bootstrap from 'bootstrap'; window.bootstrap = bootstrap;
+import ckCustomUploadAdapter from './ckCustomuploadAdapter'; window.CKCustomUploadAdapter = ckCustomUploadAdapter;
 import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App)

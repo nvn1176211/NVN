@@ -12,3 +12,4 @@ window.PAGE_TYPES = {
     ARTICLES: 'articles',
     DISCUSSIONS: 'discussions',
 };
+window.CKEDITOR_IMG_UPLOAD_API = window.API_BASE + '/ckfinder_image_upload';
