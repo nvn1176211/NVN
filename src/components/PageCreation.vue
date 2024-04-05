@@ -4,7 +4,9 @@ import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import PageCKEditorComponent from './partials/PageCKEditor.vue';
 import { useI18n } from "vue-i18n";
 import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/UserStore';
 
+const userStore = useUserStore();
 const { t } = useI18n();
 const router = useRouter();
 const thumbnail = ref(null);
@@ -65,12 +67,13 @@ async function submitPageCreation() {
             isDisabledBtn.value = false;
             break;
         case 201:
-            alert(successMsg);
             isDisabledBtn.value = false;
+            sessionStorage.toastMsg = successMsg
+            userStore.recentTriggerToast = Date.now()
             router.push('/');
             break;
         default:
-            alert(t("messages.somethingWrong"));
+            console.log(t("messages.somethingWrong"));
             isDisabledBtn.value = false;
     }
 }

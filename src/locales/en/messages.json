@@ -7,6 +7,7 @@
     "loginRequired": "You need to login before performing this action!",
     "notExactCredential": "Make sure you type your email and password correctly!",
     "successLoginMsg": "You have successfully loged in!",
+    "successLogoutMsg": "You have successfully loged out!",
     "successRegisterMsg": "You have successfully registered!",
     "successCreateArticle": "You have successfully created article!",
     "successCreateDiscussion": "You have successfully created discussion!",

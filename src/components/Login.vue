@@ -45,11 +45,12 @@ async function login() {
             isNotExactCredential.value = true;
             break;
         case 200:
-            alert(t("messages.successLoginMsg"));
             helpers.setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
             userStore.isAdmin = resBodyObj.isAdmin;
             userStore.isLoggedIn = true;
+            sessionStorage.toastMsg = t("messages.successLoginMsg")
+            userStore.recentTriggerToast = Date.now()
             router.push('/');
             break;
     }
@@ -77,7 +78,8 @@ async function login() {
                             class="form-control" type="text" name="password" autocomplete="off">
                         <div class="invalid-feedback">{{ input.password.errMsg }}</div>
                     </div>
-                    <div class="alert alert-danger mt-2" role="alert" v-show="isNotExactCredential">{{ $t("messages.notExactCredential") }}</div>
+                    <div class="alert alert-danger mt-2" role="alert" v-show="isNotExactCredential">{{
+                            $t("messages.notExactCredential") }}</div>
                     <div class="d-flex justify-content-between mt-5">
                         <router-link to="/register" class="text-capitalize">{{ $t("labels.createAcc") }}</router-link>
                         <SubmitBtnComponent @submit="login" :isDisabled="isDisabledBtn" class="text-capitalize">{{
@@ -86,4 +88,5 @@ async function login() {
                 </form>
             </div>
         </div>
-</div></template>
+    </div>
+</template>

@@ -26,6 +26,7 @@ export default class CKCustomUploadAdapter {
         const xhr = this.xhr = new XMLHttpRequest();
         xhr.open( 'POST', `${CKEDITOR_IMG_UPLOAD_API}?api_token=${helpers.getCookie('api_token')}`, true );
         xhr.responseType = 'json';
+        xhr.setRequestHeader('Accept', 'application/json');
     }
 
     // Initializes XMLHttpRequest listeners.

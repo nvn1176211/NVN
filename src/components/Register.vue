@@ -46,11 +46,12 @@ async function register() {
             helpers.handleInvalidInput(resBodyObj, input);
             break;
         case 201:
-            alert(t("messages.successRegisterMsg"));
             helpers.setCookieY('api_token', resBodyObj.api_token, 1, '/');
             userStore.username = resBodyObj.username;
 			userStore.isAdmin = resBodyObj.isAdmin;
 			userStore.isLoggedIn = true;
+            sessionStorage.toastMsg = t("messages.successRegisterMsg")
+            userStore.recentTriggerToast = Date.now()
             router.push('/');
             break;
     }

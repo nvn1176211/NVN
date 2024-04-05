@@ -1,7 +1,9 @@
 <script setup>
 import { useUserStore } from '../stores/UserStore';
 import { useRouter } from 'vue-router';
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 function darkModeSwitch() {
@@ -11,6 +13,8 @@ function darkModeSwitch() {
 function logout(){
   helpers.setCookieY('api_token', 'value', -1, '/');
   userStore.$reset();
+  sessionStorage.toastMsg = t("messages.successLogoutMsg")
+  userStore.recentTriggerToast = Date.now()
   router.push('/'); 
 }
 </script>

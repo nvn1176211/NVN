@@ -12,6 +12,11 @@ onMounted(() => {
   ClassicEditor
     .create(document.querySelector('#pageEditor'), {
       extraPlugins: [CKCustomUploadAdapterPlugin],
+      image: {
+        upload: {
+          types: [ 'jpeg', 'png' ]
+        }
+      },
       mediaEmbed: {
         previewsInData: true
       }

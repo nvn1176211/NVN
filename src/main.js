@@ -2,7 +2,7 @@ import './assets/main.css'
 import "./env.js"
 import "./helper.js"
 import * as bootstrap from 'bootstrap'; window.bootstrap = bootstrap;
-import ckCustomUploadAdapter from './ckCustomuploadAdapter'; window.CKCustomUploadAdapter = ckCustomUploadAdapter;
+import CKCustomUploadAdapter from './ckCustomuploadAdapter'; window.CKCustomUploadAdapter = CKCustomUploadAdapter;
 import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App)
@@ -16,7 +16,6 @@ import { useUserStore } from './stores/UserStore';
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import Pages from "./components/Pages.vue"
-import EventTag from "./components/EventTag.vue"
 import PageCreation from './components/PageCreation.vue';
 import Article from "./components/Article.vue"
 import Discussion from "./components/Discussion.vue"
@@ -51,11 +50,6 @@ const router = createRouter({
     //   name: 'event',
     //   component: Event
     // },
-    {
-      path: '/event_tags/:id',
-      name: 'eventTag',
-      component: EventTag
-    },
     {
       path: '/articles/:id',
       name: 'article',

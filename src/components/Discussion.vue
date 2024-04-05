@@ -88,7 +88,6 @@ async function saveOpinion() {
             isSaveOpinionLoading.value = false;
             break;
         case 201:
-            alert(t("messages.successCreateOpinion"));
             closeOpinionCompose();
             isSaveOpinionLoading.value = false;
             opinionCKEditorComponentRef.value.setData('');
@@ -97,9 +96,11 @@ async function saveOpinion() {
             setTimeout(function(){
                 document.getElementById(`opinion-${activePageIndex.value}`).scrollIntoView();
             }, 300);
+            sessionStorage.toastMsg = t("messages.successCreateOpinion")
+            userStore.recentTriggerToast = Date.now()
             break;
         default:
-            alert(t("messages.somethingWrong"));
+            console.log(t("messages.somethingWrong"));
             isSaveOpinionLoading.value = false;
     }
 }

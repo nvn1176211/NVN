@@ -7,6 +7,7 @@
     "loginRequired": "Bạn cần login trước khi thực hiện hành động này!",
     "notExactCredential": "Đảm bảo bạn nhập email và mật khẩu chính xác!",
     "successLoginMsg": "Bạn đã đăng nhập thành công!",
+    "successLogoutMsg": "Bạn đã đăng xuất thành công!",
     "successRegisterMsg": "Bạn đã ghi danh thành công!",
     "successCreateArticle": "Bạn đã tạo bài viết thành công!",
     "successCreateDiscussion": "Bạn đã tạo trang thảo luận thành công!",

@@ -80,8 +80,9 @@ function moveToCreatePage() {
 						<div class="d-flex justify-content-between">
 							<div>
 								<h4 class="card-title">{{ page.name }}</h4>
-								<router-link :to="`/${page.type}/${page.id}`" class="text-capitalize">{{ $t('labels.seeMore')
-									}}</router-link>
+								<router-link :to="`/${page.type}/${page.id}`" class="text-capitalize">{{
+						$t('labels.seeMore')
+					}}</router-link>
 							</div>
 							<div class="ms-3">
 								<span class="badge bg-info text-capitalize">{{ page.type }}</span>
