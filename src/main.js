@@ -1,8 +1,8 @@
 import './assets/main.css'
-import "./env.js"
-import "./helper.js"
+import * as env from "./env.js"; window.env = env;
+import * as helpers from "./helper.js"; window.helpers = helpers;
 import * as bootstrap from 'bootstrap'; window.bootstrap = bootstrap;
-import CKCustomUploadAdapter from './ckCustomuploadAdapter'; window.CKCustomUploadAdapter = CKCustomUploadAdapter;
+import CKCustomUploadAdapter from './ckCustomUploadAdapter'; window.CKCustomUploadAdapter = CKCustomUploadAdapter;
 import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App)
@@ -70,7 +70,7 @@ router.beforeEach(async (to, from) => {
   const userStore = useUserStore();
   let api_token = helpers.getCookie('api_token');
   if (api_token) {
-    const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
+    const response = await fetch(`${env.API_BASE}/user?api_token=${api_token}`, {
       headers: {
         'Accept': 'application/json',
       },
@@ -102,7 +102,7 @@ router.afterEach(async (to, from) => {
   const userStore = useUserStore();
   let api_token = helpers.getCookie('api_token');
   if (api_token) {
-    const response = await fetch(`${API_BASE}/user?api_token=${api_token}`, {
+    const response = await fetch(`${env.API_BASE}/user?api_token=${api_token}`, {
       headers: {
         'Accept': 'application/json',
       },

@@ -26,7 +26,7 @@ onMounted(async () => {
         keyboard: false
     })
     let api_token = helpers.getCookie('api_token') ?? '';
-    await fetch(`${API_BASE}/articles/${articleId}?api_token=${api_token}`)
+    await fetch(`${env.API_BASE}/articles/${articleId}?api_token=${api_token}`)
         .then((response) => {
             return response.json();
         })
@@ -43,7 +43,7 @@ onMounted(async () => {
 async function removePage() {
     // isDisabledBtn.value = true;
     // let api_token = helpers.getCookie('api_token');
-    // const response = await fetch(`${API_BASE}/events/${pendingRemovetId}/delete?api_token=${api_token}`);
+    // const response = await fetch(`${env.API_BASE}/events/${pendingRemovetId}/delete?api_token=${api_token}`);
     // switch (response.status) {
     //     case 200:
     //         removeConfirmModal.hide();

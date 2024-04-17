@@ -23,7 +23,7 @@ watch(event_search, async (new_event_search) => {
 async function search(new_event_search) {
 	is_search_requesting = true;
 	isSearchSpinActive.value = true;
-	await fetch(`${API_BASE}/pages?search=${new_event_search === null ? '' : new_event_search}`)
+	await fetch(`${env.API_BASE}/pages?search=${new_event_search === null ? '' : new_event_search}`)
 		.then((response) => {
 			return response.json();
 		})

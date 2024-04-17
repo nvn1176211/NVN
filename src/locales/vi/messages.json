@@ -12,6 +12,7 @@
     "successCreateArticle": "Bạn đã tạo bài viết thành công!",
     "successCreateDiscussion": "Bạn đã tạo trang thảo luận thành công!",
     "successCreateOpinion": "Bạn đã tạo ý kiến thành công!",
+    "successUpdateOpinion": "Bạn đã cập nhật ý kiến thành công!",
     "successCreateEventPage": "Bạn đã tạo trang sự kiện lịch sử thành công!",
     "successCreateEventTag": "Bạn đã tạo tag sự kiện lịch sử thành công!",
     "somethingWrong": "Có gì đó sai sai"

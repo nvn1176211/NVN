@@ -10,9 +10,6 @@ const emit = defineEmits(['vote'])
 const isPause = ref(false);
 const change = ref(0);
 const currentVote = ref(null);
-const ctnClassObj = reactive({
-    'bg-gray': false,
-});
 const voted = computed(() => { return currentVote.value !== null ? currentVote.value : props.voted })
 async function vote() {
     isPause.value = true;
@@ -25,7 +22,7 @@ async function vote() {
     let formdata = new FormData();
     if (api_token) formdata.append("api_token", api_token);
     if (props.id) formdata.append("id", props.id);
-    let response = await fetch(`${API_BASE}/${props.sector}/toggle`, {
+    let response = await fetch(`${env.API_BASE}/${props.sector}/toggle`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -47,23 +44,23 @@ async function vote() {
             console.log("Something is wrong!");
     }
 }
-function blurLook() {
-    ctnClassObj['bg-gray'] = true;
-}
-function clearLook() {
-    ctnClassObj['bg-gray'] = false;
-}
 </script>
 
 <template>
-    <div style="width: 70px; height: 26px;"
-        class="cursor-pointer border border-dark rounded ps-2 pe-2 d-flex justify-content-center align-items-center"
-        :class="ctnClassObj" @click="vote" @mouseover="blurLook" @mouseout="clearLook">
+    <div class="vote-ctn cursor-pointer border border-dark rounded ps-2 pe-2 me-2 d-flex justify-content-center align-items-center" @click="vote" @mouseover="blurLook" @mouseout="clearLook">
         <span v-show="isPause" class="spinner-border spinner-border-sm position-absolute" role="status"
             aria-hidden="true"></span>
         <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="!isPause && voted"></i>
         <i class="bi me-2 bi-hand-thumbs-up" v-show="!isPause && !voted"></i>
         <span v-show="!isPause">{{ votes + change }}</span>
     </div>
-    <!-- <LoginRequiredModalComponent ref="loginRequiredModalRef" /> -->
 </template>
+<style scoped>
+.vote-ctn{
+    width: 70px; 
+    height: 26px;
+}
+.vote-ctn:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+</style>

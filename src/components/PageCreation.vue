@@ -10,7 +10,7 @@ const userStore = useUserStore();
 const { t } = useI18n();
 const router = useRouter();
 const thumbnail = ref(null);
-const pageTypes = PAGE_TYPES;
+const pageTypes = env.PAGE_TYPES;
 const typeInput = ref(pageTypes.ARTICLES);
 const pageCKEditorComponentRef = ref(null);
 const inputs = reactive({
@@ -45,11 +45,11 @@ async function submitPageCreation() {
     let api_route;
     switch (typeInput.value) {
         case pageTypes.ARTICLES:
-            api_route = ARTICLES_CREATION_API;
+            api_route = env.ARTICLES_CREATION_API;
             successMsg = t("messages.successCreateArticle");
             break;
         case pageTypes.DISCUSSIONS:
-            api_route = DISCUSSIONS_CREATION_API;
+            api_route = env.DISCUSSIONS_CREATION_API;
             successMsg = t("messages.successCreateDiscussion");
             break;
     }

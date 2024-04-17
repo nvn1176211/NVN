@@ -29,7 +29,7 @@ async function login() {
     let formdata = new FormData();
     if (input.username.val) formdata.append("username", input.username.val);
     if (input.password.val) formdata.append("password", input.password.val);
-    const response = await fetch(`${API_BASE}/login`, {
+    const response = await fetch(`${env.API_BASE}/login`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',

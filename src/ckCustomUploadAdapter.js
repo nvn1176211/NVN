@@ -24,7 +24,7 @@ export default class CKCustomUploadAdapter {
     // Initializes the XMLHttpRequest object using the URL passed to the constructor.
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        xhr.open( 'POST', `${CKEDITOR_IMG_UPLOAD_API}?api_token=${helpers.getCookie('api_token')}`, true );
+        xhr.open( 'POST', `${env.CKEDITOR_IMG_UPLOAD_API}?api_token=${helpers.getCookie('api_token')}`, true );
         xhr.responseType = 'json';
         xhr.setRequestHeader('Accept', 'application/json');
     }

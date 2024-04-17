@@ -12,6 +12,7 @@
     "successCreateArticle": "You have successfully created article!",
     "successCreateDiscussion": "You have successfully created discussion!",
     "successCreateOpinion": "You have successfully created opinion!",
+    "successUpdateOpinion": "You have successfully updated opinion!",
     "successCreateEventPage": "You have successfully created event page!",
     "successCreateEventTag": "You have successfully created event tag!",
     "somethingWrong": "Something is wrong"
