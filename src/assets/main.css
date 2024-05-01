@@ -30,10 +30,6 @@ body.modal-open {
     color: #f5c518;
 }
 
-.bg-gray {
-    background-color: lightgray;
-}
-
 .tag-search-spin{
     width: 30px; 
     height: 30px;
@@ -45,4 +41,35 @@ body.modal-open {
 
 .ck-content{
  border-color: inherit !important;
+}
+
+/* custom button */
+.common-btn:hover {
+    background-color: var(--bs-tertiary-bg);
+}
+
+/* custom width */
+.w-256px{
+    width: 256px;
+}
+
+/* custom height */
+.h-auto{
+    height: auto;
+}
+.h-160px{
+    height: 160px;
+}
+
+/* custom background color */
+.bg-gray {
+    background-color: lightgray;
+}
+.bg-whitesmoke {
+    background-color: whitesmoke;
+}
+
+/* custom border color */
+.border-gray {
+    border-color: rgb(204, 206, 209);
 }

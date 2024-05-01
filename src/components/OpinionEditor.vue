@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { useUserStore } from '../../stores/UserStore';
+import { ref, reactive } from 'vue';
+import SimpleCKEditorComponent from './partials/SimpleCKEditor.vue';
 import { useI18n } from "vue-i18n";
+import { useUserStore } from '../stores/UserStore';
 
-const { t } = useI18n();
 const userStore = useUserStore();
-const props = defineProps(['iconicBtn', 'name', 'orgContent', 'discussionId', 'opinionId']);
-let editorInstance;
+const { t } = useI18n();
+const props = defineProps(['iconicBtn', 'orgContent', 'name', 'stageId', 'opinionId', 'discussionId']);
+const emit = defineEmits(['updateOpinion', 'pushNewOpinion'])
 const inputs = reactive({
   content: {
     errMsg: null,
@@ -14,40 +15,27 @@ const inputs = reactive({
     val: '',
   },
 });
+let editorId = 'opinion-editor' + (props.opinionId ? ('-' + props.opinionId) : '');
 let ckFields = {
-  content: `opinion-editor-${props.name}`
+  content: editorId
 };
 const isSaving = ref(false);
-const ckeditorCtnRef = ref(null);
+const opinionEditorRef = ref(null);
 const iconicBtnRef = ref(null);
-const emit = defineEmits(['showOpinionContent', 'pushNewOpinion', 'updateOpinion'])
-
-onMounted(() => {
-  ClassicEditor
-    .create(document.querySelector(`#ckeditor-${props.name}`), {
-      toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', 'blockQuote', '|', 'numberedList', 'bulletedList', 'outdent', 'indent']
-    })
-    .then(editor => {
-      editor.setData(props.orgContent ?? '');
-      editorInstance = editor;
-      editor.model.document.on('change:data', () => {
-        inputs.content.val = editor.getData();
-      });
-    });
-})
+const editorRef = ref(null);
 
 /**
  * @param String newContent
  * @return Void
  */
 function cancelCompose(newContent) {
-  helpers.refreshFormErrInput(inputs, ckFields);
-  ckeditorCtnRef.value.classList.add('d-none');
-  emit('showOpinionContent');
-  editorInstance.setData(newContent ? newContent : (props.orgContent ?? ''));
-  if (props.iconicBtn) {
-    iconicBtnRef.value.classList.remove('d-none');
+  opinionEditorRef.value.classList.add('d-none');
+  if(iconicBtnRef.value) iconicBtnRef.value.classList.remove('d-none');
+  if (props.stageId) {
+    document.getElementById(props.stageId).classList.remove('d-none');
   }
+  helpers.refreshFormErrInput(inputs, ckFields);
+  editorRef.value.cancelCompose(newContent);
 }
 
 function openCompose() {
@@ -55,7 +43,7 @@ function openCompose() {
     loginRquiredModal.show();
     return false;
   }
-  ckeditorCtnRef.value.classList.remove('d-none');
+  opinionEditorRef.value.classList.remove('d-none');
   if (props.iconicBtn) {
     iconicBtnRef.value.classList.add('d-none');
   }
@@ -67,9 +55,10 @@ async function save() {
   let url = props.opinionId ? `${env.OPINIONS_UPDATE_API}/${props.opinionId}` : env.OPINIONS_CREATION_API;
   let formdata = new FormData();
   let api_token = helpers.getCookie('api_token');
-  formdata.append("discussion_id", props.discussionId);
+  let content = editorRef.value.content;
   if (api_token) formdata.append("api_token", api_token);
-  if (inputs.content.val) formdata.append("content", inputs.content.val);
+  if (content) formdata.append("content", content);
+  if (props.discussionId) formdata.append("discussion_id", props.discussionId);
   if (props.opinionId) formdata.append("opinion_id", props.opinionId);
   const response = await fetch(url, {
     method: "POST",
@@ -100,21 +89,18 @@ async function save() {
   }
 }
 </script>
+
 <template>
   <button class="btn btn-primary" @click="openCompose" v-if="iconicBtn" ref="iconicBtnRef">{{
     $t("messages.addAOpinion") }}</button>
-  <div :id="`opinion-editor-${name}`" class="border rounded d-none" ref="ckeditorCtnRef">
-    <div>
-      <div :id="`ckeditor-${name}`"></div>
-      <textarea :class="{ 'is-invalid': inputs.content.isInvalid }" style="display: none;"></textarea>
-      <div class="invalid-feedback ps-2">{{ inputs.content.errMsg }}</div>
-    </div>
+  <div :id="editorId" class="border rounded d-none" ref="opinionEditorRef">
+    <SimpleCKEditorComponent :name="name" ref="editorRef" :orgContent="orgContent" :isInvalid="inputs.content.isInvalid"
+      :errMsg="inputs.content.errMsg" />
     <div class="p-2 d-flex justify-content-end">
       <button class="btn btn-secondary me-2" @click="cancelCompose(null)">{{ $t("labels.cancel")
         }}</button>
       <button class="btn btn-primary" @click="save" :disabled="isSaving">
-        <span v-show="isSaving" class="spinner-border spinner-border-sm" role="status"
-          aria-hidden="true"></span>
+        <span v-show="isSaving" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         {{ $t("labels.save") }}
       </button>
     </div>

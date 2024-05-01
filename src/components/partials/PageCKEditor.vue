@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-defineProps(['name', 'isInvalid', 'errMsg']);
+const props = defineProps(['name', 'orgContent', 'isInvalid', 'errMsg']);
 let editorInstance;
-const content = ref(null);
+const content = ref(props.orgContent);
 defineExpose({
-  content, setData
+  content, setData, cancelCompose
 })
 
 onMounted(() => {
@@ -14,7 +14,7 @@ onMounted(() => {
       extraPlugins: [CKCustomUploadAdapterPlugin],
       image: {
         upload: {
-          types: [ 'jpeg', 'png' ]
+          types: ['jpeg', 'png']
         }
       },
       mediaEmbed: {
@@ -22,9 +22,9 @@ onMounted(() => {
       }
     })
     .then(editor => {
-      window.myEditor = editor;
+      editor.setData(props.orgContent ?? '');
+      editorInstance = editor;
       editor.model.document.on('change:data', () => {
-        editorInstance = editor;
         content.value = editor.getData();
       });
     })
@@ -37,6 +37,14 @@ function CKCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     return new CKCustomUploadAdapter(loader);
   };
+}
+
+/**
+ * @param String newContent
+ * @return Void
+ */
+function cancelCompose(newContent) {
+  editorInstance.setData(newContent ?? (props.orgContent ?? ''));
 }
 
 function setData(data) {

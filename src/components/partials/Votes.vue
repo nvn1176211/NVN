@@ -1,11 +1,9 @@
 <script setup>
-import { ref, computed, reactive } from 'vue';
+import { ref, computed } from 'vue';
 import { useUserStore } from '../../stores/UserStore';
-// import LoginRequiredModalComponent from './LoginRequiredModal.vue';
 
-// const loginRequiredModalRef = ref(null);
 const userStore = useUserStore();
-const props = defineProps(['voted', 'votes', 'id', 'sector']);
+const props = defineProps(['voted', 'votes', 'id', 'sector', 'isEditable']);
 const emit = defineEmits(['vote'])
 const isPause = ref(false);
 const change = ref(0);
@@ -41,13 +39,19 @@ async function vote() {
             isPause.value = false;
             break;
         default:
-            console.log("Something is wrong!");
+            console.error("Something is wrong!");
     }
 }
 </script>
 
 <template>
-    <div class="vote-ctn cursor-pointer border border-dark rounded ps-2 pe-2 me-2 d-flex justify-content-center align-items-center" @click="vote" @mouseover="blurLook" @mouseout="clearLook">
+    <div v-show="!isEditable">
+        <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="voted"></i>
+        <i class="bi me-2 bi-hand-thumbs-up" v-show="!voted"></i>
+        <span>{{ votes + change }}</span>
+    </div>
+    <div class="common-btn vote-ctn cursor-pointer border border-dark rounded ps-2 pe-2 me-2 justify-content-center align-items-center" :class="isEditable ? 'd-flex' : 'd-none'"
+        @click="vote">
         <span v-show="isPause" class="spinner-border spinner-border-sm position-absolute" role="status"
             aria-hidden="true"></span>
         <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="!isPause && voted"></i>
@@ -56,11 +60,8 @@ async function vote() {
     </div>
 </template>
 <style scoped>
-.vote-ctn{
-    width: 70px; 
+.vote-ctn {
+    width: 70px;
     height: 26px;
-}
-.vote-ctn:hover {
-    background-color: var(--bs-tertiary-bg);
 }
 </style>

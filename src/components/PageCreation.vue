@@ -73,7 +73,7 @@ async function submitPageCreation() {
             router.push('/');
             break;
         default:
-            console.log(t("messages.somethingWrong"));
+            console.error(t("messages.somethingWrong"));
             isDisabledBtn.value = false;
     }
 }

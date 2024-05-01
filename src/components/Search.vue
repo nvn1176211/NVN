@@ -3,7 +3,7 @@
     const event_search = ref(null);
     const event_search2 = ref(null);
     watch(() => event_search.value + event_search2.value, (new_event_search) => {
-        console.log(new_event_search);
+        console.error(new_event_search);
     })
 </script>
 

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import ArticleEditorComponent from './ArticleEditor.vue';
+import OtherActionsComponent from './partials/OtherActions.vue';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useI18n } from "vue-i18n";
 import VotesComponent from './partials/Votes.vue';
@@ -18,7 +20,9 @@ const articleVotes = ref(0);
 const articleVoted = ref('no');
 const isDisabledBtn = ref(false);
 const isLoadingSpinActive = ref(true);
-const contentRef = ref(null);
+const articleContentRef = ref(null);
+const articleContent = ref('');
+const isYourOwnArticle = ref(false);
 let removeConfirmModal = null;
 let pendingRemovetId = null;
 onMounted(async () => {
@@ -31,10 +35,12 @@ onMounted(async () => {
             return response.json();
         })
         .then((json) => {
-            contentRef.value.innerHTML = json.content;
+            articleContentRef.value.innerHTML = json.content;
+            articleContent.value = json.content;
             articleName.value = json.name;
             articleVotes.value = json.votes;
             articleVoted.value = json.voted;
+            isYourOwnArticle.value = json.is_your_own == 'yes' ? true : false;
             articleAuthorName.value = json.author_name;
             articleCreatedAt.value = json.f1_created_at;
             isLoadingSpinActive.value = false;
@@ -60,6 +66,11 @@ function confirmRemove(id) {
     pendingRemovetId = id;
     removeConfirmModal.show();
 }
+function updateArticle(content){
+    articleContentRef.value.innerHTML = content;
+    sessionStorage.toastMsg = t("messages.successUpdateArticle")
+    userStore.recentTriggerToast = Date.now()
+}
 </script>
 
 <template>
@@ -71,20 +82,24 @@ function confirmRemove(id) {
             <div>
                 <div id="title-block" class="d-flex justify-content-between align-items-center">
                     <h2>{{ articleName }}</h2>
-                    <button v-if="userStore.isAdmin" @click="confirmRemove(articleId)" class="btn btn-danger mt-3"><i
-                            class="bi bi-trash"></i></button>
+                    <!-- <button v-if="userStore.isAdmin" @click="confirmRemove(articleId)" class="btn btn-danger mt-3"><i
+                            class="bi bi-trash"></i></button> -->
                 </div>
                 <div class="mb-2">
                     <div>By {{ articleAuthorName }}</div>
                     <div>Created {{ articleCreatedAt }}</div>
                 </div>
                 <div class="mb-4 d-flex">
-                    <VotesComponent :sector="'article_votes'" :id="articleId" :votes="articleVotes"
+                    <VotesComponent class="me-2" :sector="'article_votes'" :id="articleId" :votes="articleVotes" :isEditable="true"
                         :voted="articleVoted == 'yes' ? true : false"></VotesComponent>
+                    <OtherActionsComponent :stageId="'article-stage'" :editorId="'article-editor'"
+                        :isYourOwn="isYourOwnArticle" v-if="isYourOwnArticle" />
                 </div>
             </div>
         </div>
-        <div class="ck-content" ref="contentRef"></div>
+        <div id="article-stage" class="ck-content" ref="articleContentRef"></div>
+        <ArticleEditorComponent v-if="isYourOwnArticle" :orgContent="articleContent"
+            :stageId="'article-stage'" :articleId="articleId" @updateArticle="updateArticle" />
     </div>
     <div class="modal fade" id="removeConfirmModal" tabindex="-1" aria-labelledby="removeConfirmModalLabel"
         aria-hidden="true">
