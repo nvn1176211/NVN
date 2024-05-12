@@ -6,6 +6,7 @@
     "forbidDeleteLastPage": "Bạn không thể xóa trang sự kiện cuối cùng.",
     "loginRequired": "Bạn cần login trước khi thực hiện hành động này!",
     "notExactCredential": "Đảm bảo bạn nhập email và mật khẩu chính xác!",
+    "notMatchRetypeNewPassword": "Mật khẩu mới và mật khẩu mới nhập lại phải giống nhau!",
     "successLoginMsg": "Bạn đã đăng nhập thành công!",
     "successLogoutMsg": "Bạn đã đăng xuất thành công!",
     "successRegisterMsg": "Bạn đã ghi danh thành công!",

@@ -50,18 +50,6 @@ onMounted(async () => {
             isLoadingSpinActive.value = false;
         });
 })
-async function download_img(event_thumbnail_url) {
-    // const response = await fetch(event_thumbnail_url);
-    // const blobImage = await response.blob();
-    // const href = URL.createObjectURL(blobImage);
-    // const anchorElement = document.createElement('a');
-    // anchorElement.href = href;
-    // anchorElement.download = 'thumbnal.jpg';
-    // document.body.appendChild(anchorElement);
-    // anchorElement.click();
-    // document.body.removeChild(anchorElement);
-    // URL.revokeObjectURL(href);
-}
 async function removePage() {
     // isDisabledBtn.value = true;
     // let api_token = helpers.getCookie('api_token');
@@ -139,7 +127,7 @@ function updateOpinion(opinion) {
                     <div>Created {{ discussionCreatedAt }}</div>
                 </div>
                 <div class="mb-4 d-flex">
-                    <VotesComponent :sector="'discussion_votes'" :id="discussionId" :votes="discussionVotes" :isEditable="true"
+                    <VotesComponent :sector="'discussions'" :id="discussionId" :votes="discussionVotes" :isEditable="true"
                         :voted="discussionVoted == 'yes' ? true : false" class="me-2"></VotesComponent>
                     <ChatsOverviewComponent :numberOfOpinions="opinions.length" class="me-2" @click="scrollToOpinionsStage" role="button"></ChatsOverviewComponent>
                     <OtherActionsComponent :stageId="'discussion-stage'" :editorId="'discussion-editor'"
@@ -180,7 +168,7 @@ function updateOpinion(opinion) {
                                         <hr>
                                     </div>
                                     <div class="mt-2 d-flex">
-                                        <VotesComponent :sector="'opinion_votes'" :id="opinion.id" :isEditable="index == activePageIndex"
+                                        <VotesComponent :sector="'opinions'" :id="opinion.id" :isEditable="index == activePageIndex"
                                             :votes="opinion.votes" :voted="opinion.voted == 'yes' ? true : false"
                                             class="me-2">
                                         </VotesComponent>

@@ -10,10 +10,6 @@ body.modal-open {
     padding-right: calc(var(--bs-gutter-x) * .5) !important;/* keep padding right when modal-open */
 }
 
-.cursor-pointer {
-    cursor: pointer;
-}
-
 .round-btn {
     border-radius: 50% !important;
     display: flex;
@@ -43,22 +39,33 @@ body.modal-open {
  border-color: inherit !important;
 }
 
+/* effect */
+.image-hover-effect:hover{
+    background-color: var(--bs-tertiary-bg);
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+
 /* custom button */
+.common-btn {
+    background-color: white;
+}
 .common-btn:hover {
     background-color: var(--bs-tertiary-bg);
 }
 
 /* custom width */
-.w-256px{
-    width: 256px;
+.w-100percent{
+    width: 100%;
 }
 
 /* custom height */
+.h-100percent{
+    height: 100%;
+}
 .h-auto{
     height: auto;
-}
-.h-160px{
-    height: 160px;
 }
 
 /* custom background color */
@@ -70,6 +77,8 @@ body.modal-open {
 }
 
 /* custom border color */
-.border-gray {
-    border-color: rgb(204, 206, 209);
+
+/* z-index */
+.z-index-99{
+    z-index: 99;
 }

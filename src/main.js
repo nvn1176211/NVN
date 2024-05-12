@@ -15,6 +15,7 @@ app.use(createPinia())
 import { useUserStore } from './stores/UserStore';
 // import { createRouter, createWebHashHistory } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
+import Settings from "./components/Settings.vue"
 import Pages from "./components/Pages.vue"
 import PageCreation from './components/PageCreation.vue';
 import Article from "./components/Article.vue"
@@ -45,11 +46,11 @@ const router = createRouter({
       name: 'createPage',
       component: PageCreation
     },
-    // {
-    //   path: '/events/:id',
-    //   name: 'event',
-    //   component: Event
-    // },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings
+    },
     {
       path: '/articles/:id',
       name: 'article',
@@ -64,13 +65,13 @@ const router = createRouter({
 });
 // some page need beforeEach fetch auth data for redirect as soon as
 router.beforeEach(async (to, from) => {
-  if(to.name != 'login' && to.name != 'register' && to.name != 'createPage' && to.name != 'article' && to.name != 'discussion'){
+  if(to.name != 'login' && to.name != 'register' && to.name != 'createPage' && to.name != 'article' && to.name != 'discussion' && to.name != 'settings'){
     return true;
   }
   const userStore = useUserStore();
   let api_token = helpers.getCookie('api_token');
   if (api_token) {
-    const response = await fetch(`${env.API_BASE}/user?api_token=${api_token}`, {
+    const response = await fetch(`${env.USERS_INFO_API}?api_token=${api_token}`, {
       headers: {
         'Accept': 'application/json',
       },
@@ -79,6 +80,7 @@ router.beforeEach(async (to, from) => {
     switch (response.status) {
       case 200:
         userStore.username = resBodyObj.username;
+        userStore.email = resBodyObj.email;
         userStore.isAdmin = resBodyObj.is_admin;
         userStore.isLoggedIn = true;
         break;
@@ -90,8 +92,9 @@ router.beforeEach(async (to, from) => {
   if (
     ((to.name == "login" || to.name == 'register') && userStore.isLoggedIn)
     || (to.name == "createPage" && !userStore.isLoggedIn)
+    || (to.name == "settings" && !userStore.isLoggedIn)
   ) {
-    return { name: 'events' }
+    return { name: 'pages' }
   }
 })
 // only afterEach fetch auth data in specific pages for increase perfomance
@@ -102,7 +105,7 @@ router.afterEach(async (to, from) => {
   const userStore = useUserStore();
   let api_token = helpers.getCookie('api_token');
   if (api_token) {
-    const response = await fetch(`${env.API_BASE}/user?api_token=${api_token}`, {
+    const response = await fetch(`${env.USERS_INFO_API}?api_token=${api_token}`, {
       headers: {
         'Accept': 'application/json',
       },
@@ -111,6 +114,7 @@ router.afterEach(async (to, from) => {
     switch (response.status) {
       case 200:
         userStore.username = resBodyObj.username;
+        userStore.email = resBodyObj.email;
         userStore.isAdmin = resBodyObj.is_admin;
         userStore.isLoggedIn = true;
         break;

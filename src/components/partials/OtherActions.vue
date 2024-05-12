@@ -1,5 +1,4 @@
 <script setup>
-
 const props = defineProps(['isYourOwn', 'editorId', 'stageId']);
 const emit = defineEmits(['showEditor', 'hideStage'])
 function edit(){

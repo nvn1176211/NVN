@@ -2,7 +2,9 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/UserStore';
+import VotesComponent from './partials/Votes.vue';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
+import ImagesGalleryComponent from './partials/ImagesGallery.vue';
 import { useFetch } from '../composables/fetch'
 
 const isDisabledBtn = ref(false);
@@ -10,9 +12,9 @@ const userStore = useUserStore();
 const event_search = ref(null);
 const router = useRouter();
 let timeDiff = window.helpers.timeDiff;
-
+let api_token = helpers.getCookie('api_token');
 const searchUrl = computed(() => {
-	return `${env.API_BASE}/pages?search=${event_search.value ?? ''}`
+	return `${env.API_BASE}/pages?search=${event_search.value ?? ''}&api_token=${api_token ?? ''}`
 });
 const pages = computed(() => {
 	return data.value ? (data.value.pages ?? []) : [];
@@ -26,7 +28,7 @@ function moveToCreatePage() {
 	isDisabledBtn.value = true;
 	router.push({ name: 'createPage' });
 }
-function openPage(url){
+function openPage(url) {
 	router.push(url);
 }
 </script>
@@ -57,17 +59,16 @@ function openPage(url){
 		</div>
 	</div>
 	<div class="mt-5">
-		<div class="page d-flex border border-gray rounded mb-3" v-for="page in pages"
-			@click="openPage(`/${page.type}/${page.id}`)">
-			<div>
-				<img v-if="page.thumbnail" :src="page.thumbnail" class="w-256px h-auto rounded-start" alt="thumbnail">
+		<div class="page d-flex border rounded mb-3" v-for="page in pages">
+			<div class="page-left-part">
+				<ImagesGalleryComponent v-if="page.thumbnail" :imgUrl="page.thumbnail" :galleryId="page.id" />
 				<div v-if="!page.thumbnail"
-					class="w-256px h-160px bg-whitesmoke rounded-start d-flex justify-content-center align-items-center">
+					class="w-100percent h-100percent bg-whitesmoke rounded-start d-flex justify-content-center align-items-center">
 					<i class="bi bi-file-text fs-1"></i>
 				</div>
 			</div>
-			<div>
-				<div class="card-body ps-3 pe-3 pt-3 pb-3">
+			<div @click="openPage(`/${page.type}/${page.id}`)" class="page-right-part">
+				<div class="ps-3 pe-3 pt-3 pb-3">
 					<div>
 						<span class="fw-bold">{{ page.author_name }}</span>
 						<i class="bi bi-dot"></i>
@@ -75,7 +76,11 @@ function openPage(url){
 							<small :title="page.f1_created_at">{{ timeDiff(page.f1_created_at) }}</small>
 						</span>
 					</div>
-					<h5 class="card-title">{{ page.name }}</h5>
+					<h5 class="page-title">{{ page.name }}</h5>
+					<div class="d-flex">
+						<VotesComponent :sector="page.type" :id="page.id" :votes="page.votes" :isEditable="true"
+							:voted="page.voted == 'yes' ? true : false" class="z-index-99" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -83,10 +88,40 @@ function openPage(url){
 </template>
 <style scoped>
 .page {
-	cursor: pointer;
+	border-color: rgb(204, 206, 209);
+	flex-wrap: wrap;
 }
 
-.page:hover {
+.page-title {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	margin-bottom: 10px;
+}
+
+.page-left-part {
+	height: 160px;
+	flex: 0 0 256px;
+	flex-grow: 1;
+}
+
+.page-right-part {
+	cursor: pointer;
+	overflow: hidden;
+	flex-grow: 99;
+}
+
+.page-right-part:hover {
 	background-color: var(--bs-tertiary-bg);
+}
+
+@media only screen and (min-width: 768px) {
+	.page {
+		flex-wrap: nowrap;
+	}
+
+	.page-left-part {
+		flex-grow: 0;
+	}
 }
 </style>

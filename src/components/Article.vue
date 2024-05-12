@@ -90,7 +90,7 @@ function updateArticle(content){
                     <div>Created {{ articleCreatedAt }}</div>
                 </div>
                 <div class="mb-4 d-flex">
-                    <VotesComponent class="me-2" :sector="'article_votes'" :id="articleId" :votes="articleVotes" :isEditable="true"
+                    <VotesComponent class="me-2" :sector="'articles'" :id="articleId" :votes="articleVotes" :isEditable="true"
                         :voted="articleVoted == 'yes' ? true : false"></VotesComponent>
                     <OtherActionsComponent :stageId="'article-stage'" :editorId="'article-editor'"
                         :isYourOwn="isYourOwnArticle" v-if="isYourOwnArticle" />

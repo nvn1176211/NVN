@@ -3,11 +3,13 @@ function getCookie(name) {
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
 function setCookieY(name, value, yearDuration, path) {
   let expire = new Date();
   expire.setFullYear(expire.getFullYear() + yearDuration);
   document.cookie = `${name}=${value};expires=${expire};path=${path}`;
 }
+
 /**
  * Returns dynamic time difference, minutes ago, hours ago...
  *
@@ -35,6 +37,21 @@ function timeDiff(inputDateStr) {
     return `${minutesDiff} minutes ago`;
   }
 }
+
+async function download_img(imageUrl, imageName) {
+  const response = await fetch(imageUrl);
+  const blobImage = await response.blob();
+  let imageType = blobImage.type.replace('image/', '');
+  const href = URL.createObjectURL(blobImage);
+  const anchorElement = document.createElement('a');
+  anchorElement.href = href;
+  anchorElement.download = imageName ? `${imageName}.${imageType}` : `image.${imageType}`;
+  document.body.appendChild(anchorElement);
+  anchorElement.click();
+  document.body.removeChild(anchorElement);
+  URL.revokeObjectURL(href);
+}
+
 /**
  * @param Object inputs
  * @param Object ckFields
@@ -49,6 +66,7 @@ function refreshFormErrInput(inputs, ckFields) {
     };
   }
 }
+
 /**
  * @param Object errors
  * @param Object inputs
@@ -68,4 +86,5 @@ function handleInvalidInput(errors, inputs, ignoreInputs, ckFields) {
     inputs[key].errMsg = errInputObj[key][0];
   }
 }
-export { getCookie, setCookieY, timeDiff, refreshFormErrInput, handleInvalidInput };
+
+export { getCookie, setCookieY, timeDiff, download_img, refreshFormErrInput, handleInvalidInput };

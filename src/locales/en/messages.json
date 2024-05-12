@@ -6,6 +6,7 @@
     "forbidDeleteLastPage": "You can't delete last event page.",
     "loginRequired": "You need to login before performing this action!",
     "notExactCredential": "Make sure you type your email and password correctly!",
+    "notMatchRetypeNewPassword": "New password & retype new password should match",
     "successLoginMsg": "You have successfully loged in!",
     "successLogoutMsg": "You have successfully loged out!",
     "successRegisterMsg": "You have successfully registered!",

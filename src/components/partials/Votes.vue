@@ -20,7 +20,7 @@ async function vote() {
     let formdata = new FormData();
     if (api_token) formdata.append("api_token", api_token);
     if (props.id) formdata.append("id", props.id);
-    let response = await fetch(`${env.API_BASE}/${props.sector}/toggle`, {
+    let response = await fetch(`${env.API_BASE}/votes/${props.sector}/toggle`, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
@@ -45,18 +45,20 @@ async function vote() {
 </script>
 
 <template>
-    <div v-show="!isEditable">
-        <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="voted"></i>
-        <i class="bi me-2 bi-hand-thumbs-up" v-show="!voted"></i>
-        <span>{{ votes + change }}</span>
-    </div>
-    <div class="common-btn vote-ctn cursor-pointer border border-dark rounded ps-2 pe-2 me-2 justify-content-center align-items-center" :class="isEditable ? 'd-flex' : 'd-none'"
-        @click="vote">
-        <span v-show="isPause" class="spinner-border spinner-border-sm position-absolute" role="status"
-            aria-hidden="true"></span>
-        <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="!isPause && voted"></i>
-        <i class="bi me-2 bi-hand-thumbs-up" v-show="!isPause && !voted"></i>
-        <span v-show="!isPause">{{ votes + change }}</span>
+    <div>
+        <div v-show="!isEditable">
+            <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="voted"></i>
+            <i class="bi me-2 bi-hand-thumbs-up" v-show="!voted"></i>
+            <span>{{ votes + change }}</span>
+        </div>
+        <div class="common-btn vote-ctn border border-dark rounded ps-2 pe-2 me-2 justify-content-center align-items-center" :class="isEditable ? 'd-flex' : 'd-none'"
+            @click.stop="vote" role="button">
+            <span v-show="isPause" class="spinner-border spinner-border-sm position-absolute" role="status"
+                aria-hidden="true"></span>
+            <i class="bi me-2 bi-hand-thumbs-up-fill text-orange" v-show="!isPause && voted"></i>
+            <i class="bi me-2 bi-hand-thumbs-up" v-show="!isPause && !voted"></i>
+            <span v-show="!isPause">{{ votes + change }}</span>
+        </div>
     </div>
 </template>
 <style scoped>
