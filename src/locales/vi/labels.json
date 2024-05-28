@@ -7,7 +7,13 @@
     "create": "tạo",
     "createAcc": "tạo tài khoản",
     "currentPassword": "mật khẩu hiện tại",
+    "darkMode": "chế độ tối",
     "email": "email",
+    "language": "ngôn ngữ",
+    "languages": {
+        "en": "tiếng anh",
+        "vi": "tiếng việt"
+    },
     "login": "đăng nhập",
     "logout": "đăng xuất",
     "name": "tên",

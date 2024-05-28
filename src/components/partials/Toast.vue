@@ -17,7 +17,7 @@ watch(() => userStore.recentTriggerToast, (new_val) => {
 </script>
 
 <template>
-	<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+	<div class="position-fixed top-0 start-50 translate-middle-x p-3 zindex-tooltip">
 		<div id="sucessLoginToast" class="toast hide bg-success text-white" role="alert" aria-live="assertive"
 			aria-atomic="true" data-bs-animation="true">
 			<div class="toast-body d-flex justify-content-between align-items-center">

@@ -7,7 +7,13 @@
     "create": "create",
     "createAcc": "create account",
     "currentPassword": "current password",
+    "darkMode": "dark mode",
     "email": "email",
+    "language": "language",
+    "languages": {
+        "en": "english",
+        "vi": "vietnamese"
+    },
     "login": "login",
     "logout": "log out",
     "name": "name",

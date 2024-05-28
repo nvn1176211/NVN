@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useUserStore } from '../stores/UserStore';
 import SubmitBtnComponent from './partials/SubmitBtn.vue';
 import { useI18n } from "vue-i18n";
@@ -7,60 +7,74 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const userStore = useUserStore();
 const inputs = reactive({
-    password: {
-        errMsg: null,
-        isInvalid: false,
-        val: null,
-    },
-    newPassword: {
-        errMsg: null,
-        isInvalid: false,
-        val: null,
-    },
-    retypeNewPassword: {
-        errMsg: null,
-        isInvalid: false,
-        val: null,
-    }
+	password: {
+		errMsg: null,
+		isInvalid: false,
+		val: null,
+	},
+	new_password: {
+		errMsg: null,
+		isInvalid: false,
+		val: null,
+	},
+	retype_new_password: {
+		errMsg: null,
+		isInvalid: false,
+		val: null,
+	}
 });
 const isChangingPassword = ref(false);
-async function submitChangePassword(){
+
+onMounted(() => {
+    window.passwordChangingModal = new bootstrap.Modal(document.getElementById('passwordChangingModal'), {
+        keyboard: false
+    });
+})
+
+async function submitChangePassword() {
 	isChangingPassword.value = true;
 	helpers.refreshFormErrInput(inputs);
-	if(!retypePasswordChecking()) {
+	if (!retypePasswordChecking()) {
 		isChangingPassword.value = false;
 		return false;
 	}
 	let formdata = new FormData();
 	let api_token = helpers.getCookie('api_token');
-    if (api_token) formdata.append("api_token", api_token);
-    if (inputs.password.val) formdata.append("password", inputs.password.val);
-    if (inputs.newPassword.val) formdata.append("new_password", inputs.newPassword.val);
-    let response = await fetch(`${env.API_BASE}/users/password/change`, {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-        },
-        body: formdata
-    });
-    switch (response.status) {
-        case 200:
-            // change.value -= 1;
-            // currentVote.value = false;
-            isChangingPassword.value = false;
-            break;
-        default:
-            console.error("Something is wrong!");
-    }
+	if (api_token) formdata.append("api_token", api_token);
+	if (inputs.password.val) formdata.append("password", inputs.password.val);
+	if (inputs.new_password.val) formdata.append("new_password", inputs.new_password.val);
+	let response = await fetch(`${env.API_BASE}/users/password/change`, {
+		method: "POST",
+		headers: {
+			'Accept': 'application/json',
+		},
+		body: formdata
+	});
+	const resBodyObj = await response.json();
+	switch (response.status) {
+		case 422:
+			helpers.handleInvalidInput(resBodyObj, inputs, [], []);
+			isChangingPassword.value = false;
+			break;
+		case 200:
+			helpers.setCookieY('api_token', resBodyObj.api_token, 1, '/');
+			passwordChangingModal.hide()
+			sessionStorage.toastMsg = t("messages.successUpdatePassword")
+			userStore.recentTriggerToast = Date.now()
+			isChangingPassword.value = false;
+			break;
+		default:
+			console.error("Something is wrong!");
+	}
 }
 
 /**
  * @return Boolean
  */
-function retypePasswordChecking(){
-	if(inputs.password.val != inputs.newPassword.val){
-		inputs.retypeNewPassword.errMsg = t("messages.notMatchRetypeNewPassword")
-		inputs.retypeNewPassword.isInvalid = true
+function retypePasswordChecking() {
+	if (inputs.retype_new_password.val != inputs.new_password.val) {
+		inputs.retype_new_password.errMsg = t("messages.notMatchRetypeNewPassword")
+		inputs.retype_new_password.isInvalid = true
 		return false
 	}
 	return true
@@ -100,29 +114,37 @@ function retypePasswordChecking(){
 				<div class="modal-body">
 					<form class="pt-3 pb-4" id="change-password-form">
 						<div class="mb-3">
-							<label class="form-label text-capitalize" for="password">{{ $t("labels.currentPassword") }}:</label>
-							<input id="password" :class="{ 'is-invalid': inputs.password.isInvalid }" v-model="inputs.password.val"
-								class="form-control" type="text" name="password" autocomplete="off">
+							<label class="form-label text-capitalize" for="password">{{ $t("labels.currentPassword")
+								}}:</label>
+							<input id="password" :class="{ 'is-invalid': inputs.password.isInvalid }"
+								v-model="inputs.password.val" class="form-control" type="text" name="password"
+								autocomplete="off">
 							<div class="invalid-feedback">{{ inputs.password.errMsg }}</div>
 						</div>
 						<div class="mb-3">
-							<label class="form-label text-capitalize" for="new-password">{{ $t("labels.newPassword") }}:</label>
-							<input id="new-password" :class="{ 'is-invalid': inputs.newPassword.isInvalid }" v-model="inputs.newPassword.val"
-								class="form-control" type="text" name="new_password" autocomplete="off">
-							<div class="invalid-feedback">{{ inputs.newPassword.errMsg }}</div>
+							<label class="form-label text-capitalize" for="new-password">{{ $t("labels.newPassword")
+								}}:</label>
+							<input id="new-password" :class="{ 'is-invalid': inputs.new_password.isInvalid }"
+								v-model="inputs.new_password.val" class="form-control" type="text" name="new_password"
+								autocomplete="off">
+							<div class="invalid-feedback">{{ inputs.new_password.errMsg }}</div>
 						</div>
 						<div>
-							<label class="form-label text-capitalize" for="retype-new-password">{{ $t("labels.retypeNewPassword") }}:</label>
-							<input id="retype-new-password" :class="{ 'is-invalid': inputs.retypeNewPassword.isInvalid }" v-model="inputs.retypeNewPassword.val"
-								class="form-control" type="text" name="retype_new_password" autocomplete="off">
-							<div class="invalid-feedback">{{ inputs.retypeNewPassword.errMsg }}</div>
+							<label class="form-label text-capitalize" for="retype-new-password">{{
+					$t("labels.retypeNewPassword") }}:</label>
+							<input id="retype-new-password"
+								:class="{ 'is-invalid': inputs.retype_new_password.isInvalid }"
+								v-model="inputs.retype_new_password.val" class="form-control" type="text"
+								name="retype_new_password" autocomplete="off">
+							<div class="invalid-feedback">{{ inputs.retype_new_password.errMsg }}</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
 					$t("labels.cancel") }}</button>
-					<SubmitBtnComponent @submit="submitChangePassword" :isDisabled="isChangingPassword" class="text-capitalize">{{
+					<SubmitBtnComponent @submit="submitChangePassword" :isDisabled="isChangingPassword"
+						class="text-capitalize">{{
 					$t("labels.change") }}</SubmitBtnComponent>
 				</div>
 			</div>

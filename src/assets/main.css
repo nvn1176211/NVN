@@ -1,13 +1,16 @@
 @import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
 @import "./ckeditor.css";
+@import "./light-theme.scss";
+@import "./dark-theme.scss";
 
 html {
     overflow-y: scroll;
 }
 
 body.modal-open {
-    padding-right: calc(var(--bs-gutter-x) * .5) !important;/* keep padding right when modal-open */
+    padding-right: calc(var(--bs-gutter-x) * .5) !important;
+    /* keep padding right when modal-open */
 }
 
 .round-btn {
@@ -26,52 +29,52 @@ body.modal-open {
     color: #f5c518;
 }
 
-.tag-search-spin{
-    width: 30px; 
+.tag-search-spin {
+    width: 30px;
     height: 30px;
 }
 
-.ck-editor__main{
- border-color: rgb(204, 206, 209);
+.ck-editor__main {
+    border-color: rgb(204, 206, 209);
 }
 
-.ck-content{
- border-color: inherit !important;
+.ck-content {
+    border-color: inherit !important;
 }
 
 /* effect */
-.image-hover-effect:hover{
+.image-hover-effect:hover {
     background-color: var(--bs-tertiary-bg);
 }
+
 .cursor-pointer {
     cursor: pointer;
 }
 
-/* custom button */
-.common-btn {
-    background-color: white;
-}
-.common-btn:hover {
-    background-color: var(--bs-tertiary-bg);
-}
-
 /* custom width */
-.w-100percent{
+.w-100percent {
     width: 100%;
 }
 
 /* custom height */
-.h-100percent{
+.h-100percent {
     height: 100%;
 }
-.h-auto{
+
+.h-auto {
     height: auto;
+}
+
+/* custom padding */
+.pt-10 {
+    padding-top: 6rem;
 }
 
 /* custom background color */
 .bg-gray {
     background-color: lightgray;
 }
+
 .bg-whitesmoke {
     background-color: whitesmoke;
 }
@@ -79,6 +82,18 @@ body.modal-open {
 /* custom border color */
 
 /* z-index */
-.z-index-99{
+.z-index-99 {
     z-index: 99;
+}
+
+.zindex-fixed {
+    z-index: 1030;
+}
+
+.zindex-popover {
+    z-index: 1070;
+}
+
+.zindex-tooltip {
+    z-index: 1080;
 }

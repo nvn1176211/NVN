@@ -1,0 +1,11 @@
+[data-bs-theme=dark] {
+
+    /* custom button */
+    .common-btn {
+        background-color: var(--bs-body-bg);
+    }
+
+    .common-btn:hover {
+        background-color: rgb(122, 122, 122)
+    }
+}

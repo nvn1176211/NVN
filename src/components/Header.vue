@@ -1,15 +1,52 @@
 <script setup>
+import { ref, computed, onMounted, watch } from 'vue';
 import { useUserStore } from '../stores/UserStore';
-import { useRouter } from 'vue-router';
+import { useSearchStore } from '../stores/SearchStore';
+import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from "vue-i18n";
+import { useFetch } from '../composables/fetch'
 
-const { t } = useI18n();
+const { t, locale } = useI18n({ useScope: 'global' });
+const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
+
+const langDropdownMenuRef = ref(null);
+const isOpenLangMenu = ref(false)
+function toggleLangMenu() {
+  isOpenLangMenu.value = !isOpenLangMenu.value;
+}
+function closeLangMenu() {
+  isOpenLangMenu.value = false;
+}
+function chooseLocale(val) {
+  locale.value = val;
+}
+onMounted(() => {
+  document.getElementsByTagName('body')[0].onclick = function () {
+    closeLangMenu()
+  }
+})
+
+const searchStore = useSearchStore();
+const searchVal = ref(null);
+let api_token = helpers.getCookie('api_token');
+const searchUrl = computed(() => {
+  return `${env.API_BASE}/pages?search=${searchVal.value ?? ''}&api_token=${api_token ?? ''}`
+});
+const { data } = useFetch(searchUrl);
+watch(() => data.value, (newVal) => {
+  searchStore.data = newVal ? (newVal.pages ?? []) : [];
+  searchStore.quantity = newVal ? (newVal.pages ? newVal.pages.length : 0) : 0;
+})
+
+const darkModeVal = ref(false)
 function darkModeSwitch() {
+  darkModeVal.value = !darkModeVal.value
   let html = document.documentElement;
   html.setAttribute('data-bs-theme', html.getAttribute('data-bs-theme') == 'dark' ? '' : 'dark');
 }
+
 function logout() {
   helpers.setCookieY('api_token', 'value', -1, '/');
   userStore.$reset();
@@ -17,44 +54,158 @@ function logout() {
   userStore.recentTriggerToast = Date.now()
   router.push('/');
 }
+function settings(){
+  router.push('/settings')
+}
 </script>
 
 <template>
-  <div class="d-flex justify-content-between mb-5">
-    <h1 class="m-0">
-      <router-link to="/" class="text-decoration-none">NVN</router-link>
-    </h1>
-    <div class="d-flex align-items-center">
-      <div class="me-3 d-flex align-items-center">
-        <i class="bi bi-circle-half  fs-3 p-2 me-2 cursor-pointer" @click="darkModeSwitch()"></i>
-        <select v-model="$i18n.locale" class="form-select" name="locale" role="button">
-          <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}
-          </option>
-        </select>
-      </div>
-      <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
-        <div class="dropdown">
-          <i class="bi bi-person-circle fs-3" role="button" id="accountDropdownMenuButton" data-bs-toggle="dropdown"
-            aria-expanded="false"></i>
-          <ul class="dropdown-menu" aria-labelledby="accountDropdownMenuButton">
-            <li>
-              <router-link to="/settings" class="dropdown-item text-capitalize">{{ $t("labels.settings")
-                }}</router-link>
-            </li>
-            <li>
-              <button type="button" class="dropdown-item text-capitalize" @click="logout">{{ $t("labels.logout")
-                }}</button>
-            </li>
-          </ul>
+  <nav class="border-bottom nav-bar zindex-fixed" id="myNav">
+    <div class="ps-3 pe-3 position-relative">
+      <div class="row">
+        <div class="col-12 col-md-3 d-flex align-items-center">
+          <router-link to="/" class="text-decoration-none">
+            <h1 class="m-0">NVN</h1>
+          </router-link>
         </div>
-        <!-- <div>
-          <span class="badge bg-primary me-1" id="header-user-username">{{ userStore.username }}</span>
-          <span v-if="userStore.isAdmin" class="badge bg-info" id="header-admin-label">Admin</span>
+        <div class="col-12 col-md-6 d-flex align-items-center">
+          <input v-if="route.name == 'pages'" id="t-search-i" class="form-control" type="text"
+            :placeholder="$t('messages.search')" code-val="" v-model="searchVal">
         </div>
-        <button type="button" class="btn btn-link p-0 text-capitalize" @click="logout">{{ $t("labels.logout") }}</button> -->
+        <div class="col-12 col-md-3 d-flex justify-content-end align-items-center">
+          <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
+            <div class="dropdown">
+              <i class="bi bi-person-circle fs-3" role="button" id="accountDropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false" data-bs-auto-close="outside"></i>
+              <ul class="dropdown-menu"  id="accountDropdownMenu" aria-labelledby="accountDropdownMenuButton">
+                <li class="dropdown-item" @click.stop="darkModeSwitch" role="button">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-capitalize">{{ $t('labels.darkMode') }}</div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input switch-btn" type="checkbox" id="flexSwitchCheckDefault"
+                        v-model="darkModeVal" role="button">
+                    </div>
+                  </div>
+                </li>
+                <li class="dropdown-item" role="button">
+                  <div class="dropdown">
+                    <div ref="langDropdownMenuRef" class="d-flex justify-content-between align-items-center"
+                      @click.stop="toggleLangMenu" id="languageDropdownMenuButton" data-bs-toggle="dropdown"
+                      :aria-expanded="isOpenLangMenu">
+                      <span class="text-capitalize">{{ $t('labels.language') }}: {{
+            $t(`labels.languages.${$i18n.locale}`) }}</span>
+                      <i class="bi bi-chevron-down" v-if="isOpenLangMenu == false"></i>
+                      <i class="bi bi-chevron-up" v-if="isOpenLangMenu == true"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
+                      <li class="dropdown-item text-capitalize" v-for="locale in $i18n.availableLocales"
+                        @click="chooseLocale(locale)">{{
+            $t(`labels.languages.${locale}`) }}</li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="dropdown-item text-capitalize" role="button" @click="logout">
+                  {{ $t("labels.logout") }}
+                </li>
+                <li class="dropdown-item text-capitalize" role="button" @click="settings">
+                  {{ $t("labels.settings") }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div v-if="!userStore.isLoggedIn" class="d-flex align-items-center">
+            <router-link to="/login" class="btn btn-primary rounded-pill text-capitalize me-2">{{ $t("labels.login")
+              }}</router-link>
+            <div class="dropdown">
+              <i class="bi bi-three-dots-vertical setting-btn" id="settingsDropdownMenuButton" role="button"
+                :title="$t('labels.settings')" data-bs-toggle="dropdown" aria-expanded="false"
+                data-bs-auto-close="outside"></i>
+              <ul class="dropdown-menu" id="settingsDropdownMenu" aria-labelledby="settingsDropdownMenuButton">
+                <li class="dropdown-item" @click.stop="darkModeSwitch" role="button">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-capitalize">{{ $t('labels.darkMode') }}</div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input switch-btn" type="checkbox" id="flexSwitchCheckDefault"
+                        v-model="darkModeVal" role="button">
+                    </div>
+                  </div>
+                </li>
+                <li class="dropdown-item" role="button">
+                  <div class="dropdown">
+                    <div ref="langDropdownMenuRef" class="d-flex justify-content-between align-items-center"
+                      @click.stop="toggleLangMenu" id="languageDropdownMenuButton" data-bs-toggle="dropdown"
+                      :aria-expanded="isOpenLangMenu">
+                      <span class="text-capitalize">{{ $t('labels.language') }}: {{
+            $t(`labels.languages.${$i18n.locale}`) }}</span>
+                      <i class="bi bi-chevron-down" v-if="isOpenLangMenu == false"></i>
+                      <i class="bi bi-chevron-up" v-if="isOpenLangMenu == true"></i>
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
+                      <li class="dropdown-item text-capitalize" v-for="locale in $i18n.availableLocales"
+                        @click="chooseLocale(locale)">{{
+                        $t(`labels.languages.${locale}`) }}</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-      <router-link to="/login" v-if="!userStore.isLoggedIn" class="text-capitalize">{{ $t("labels.login")
-        }}</router-link>
     </div>
-  </div>
+  </nav>
 </template>
+
+<style scoped>
+/* .dropdown-item{
+  padding-bottom: 0;
+  padding-top: 0;
+} */
+
+.nav-bar {
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.search-bar-ctn {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.setting-btn {
+  font-size: 1.25rem;
+}
+
+.form-check{
+  margin-bottom: 0
+}
+
+.switch-btn {
+  width: 40px;
+  height: 24px;
+  margin: 0;
+}
+
+#settingsDropdownMenu, #accountDropdownMenu {
+  width: 250px;
+}
+
+@media only screen and (min-width: 768px) {
+  .search-input {
+    width: 50%;
+  }
+}
+
+[data-bs-theme=dark] .nav-bar {
+  background-color: var(--bs-body-bg) !important;
+}
+</style>

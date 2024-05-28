@@ -105,7 +105,7 @@ function download(imgUrl){
     display: flex;
     justify-content: space-between;
     position: absolute;
-    z-index: 99;
+    z-index: 98;
     top: 0;
     padding: 15px;
     width: 100%;
