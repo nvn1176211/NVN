@@ -1,10 +1,9 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from '../stores/UserStore';
 import { useSearchStore } from '../stores/SearchStore';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from "vue-i18n";
-import { useFetch } from '../composables/fetch'
 
 const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
@@ -30,14 +29,8 @@ onMounted(() => {
 
 const searchStore = useSearchStore();
 const searchVal = ref(null);
-let api_token = helpers.getCookie('api_token');
-const searchUrl = computed(() => {
-  return `${env.API_BASE}/pages?search=${searchVal.value ?? ''}&api_token=${api_token ?? ''}`
-});
-const { data } = useFetch(searchUrl);
-watch(() => data.value, (newVal) => {
-  searchStore.data = newVal ? (newVal.pages ?? []) : [];
-  searchStore.quantity = newVal ? (newVal.pages ? newVal.pages.length : 0) : 0;
+watch(searchVal, (newSearchVal) => {
+  searchStore.search = newSearchVal
 })
 
 const darkModeVal = ref(false)

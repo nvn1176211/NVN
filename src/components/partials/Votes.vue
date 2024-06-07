@@ -51,7 +51,7 @@ async function vote() {
             <i class="bi me-2 bi-hand-thumbs-up" v-show="!voted"></i>
             <span>{{ votes + change }}</span>
         </div>
-        <div class="common-btn vote-ctn border rounded ps-2 pe-2 me-2 justify-content-center align-items-center" :class="isEditable ? 'd-flex' : 'd-none'"
+        <div class="common-btn vote-ctn border rounded ps-2 pe-2 justify-content-center align-items-center" :class="isEditable ? 'd-flex' : 'd-none'"
             @click.stop="vote" role="button">
             <span v-show="isPause" class="spinner-border spinner-border-sm position-absolute" role="status"
                 aria-hidden="true"></span>

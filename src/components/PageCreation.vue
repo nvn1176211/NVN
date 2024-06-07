@@ -5,7 +5,8 @@ import PageCKEditorComponent from './partials/PageCKEditor.vue';
 import { useI18n } from "vue-i18n";
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/UserStore';
-
+import { useSearchStore } from '../stores/SearchStore';
+const useSearch = useSearchStore();
 const userStore = useUserStore();
 const { t } = useI18n();
 const router = useRouter();
@@ -31,6 +32,7 @@ const inputs = reactive({
     },
 });
 const isDisabledBtn = ref(false);
+
 async function submitPageCreation() {
     helpers.refreshFormErrInput(inputs);
     isDisabledBtn.value = true;
@@ -70,6 +72,8 @@ async function submitPageCreation() {
             isDisabledBtn.value = false;
             sessionStorage.toastMsg = successMsg
             userStore.recentTriggerToast = Date.now()
+            useSearch.data.unshift(resBodyObj)
+            useSearch.quantity += 1;
             router.push('/');
             break;
         default:
