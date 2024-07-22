@@ -52,6 +52,9 @@ body.modal-open {
 }
 
 /* custom width */
+.w-200px {
+    width: 200px;
+}
 .w-100percent {
     width: 100%;
 }

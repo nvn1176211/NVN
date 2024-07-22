@@ -2,10 +2,15 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
-    const isLoggedIn = ref(false);
     const username = ref(null);
-    const email = ref(null);
     const isAdmin = ref(false);
+    const isLoggedIn = ref(false);
+    const display_name = ref(null);
+    const gender_id = ref(null);
+    const location_id = ref(null);
+    const description = ref(null);
+    const avatar = ref(env.DEFAULT_USER_AVATAR_URL);
+    const email = ref(null);
     const recentTriggerToast = ref(Date.now());
     function $reset() {
         isLoggedIn.value = false
@@ -13,5 +18,5 @@ export const useUserStore = defineStore('user', () => {
         email.value = null
         isAdmin.value = false
     }
-    return { $reset, isLoggedIn, username, email, isAdmin, recentTriggerToast }
+    return { $reset, isLoggedIn, username, display_name, gender_id, location_id, description, avatar, email, isAdmin, recentTriggerToast }
 });

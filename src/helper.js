@@ -14,7 +14,7 @@ function setCookieY(name, value, yearDuration, path) {
  * Returns dynamic time difference, minutes ago, hours ago...
  *
  * @param Date dateInput string.
- * @return String.
+ * @return Object.
  */
 function timeDiff(inputDateStr) {
   let now = new Date();
@@ -25,17 +25,27 @@ function timeDiff(inputDateStr) {
   let daysDiff = Math.floor(msTimeDiff / 1000 / 60 / 60 / 24);
   let hoursDiff = Math.floor(msTimeDiff / 1000 / 60 / 60);
   let minutesDiff = Math.floor(msTimeDiff / 1000 / 60);
-  if(yearsDiff > 0){
-    return `${yearsDiff} years ago`;
-  }else if(monthsDiff > 0){
-    return `${monthsDiff} months ago`;
-  }else if(daysDiff > 0){
-    return `${daysDiff} days ago`;
-  }else if(hoursDiff > 0){
-    return `${hoursDiff} hours ago`;
-  }else{
-    return `${minutesDiff} minutes ago`;
+  let timeDiff = {
+    quantity: null,
+    unit: null,
+  };
+  if (yearsDiff > 0) {
+    timeDiff.quantity = yearsDiff;
+    timeDiff.unit = 'years';
+  } else if (monthsDiff > 0) {
+    timeDiff.quantity = monthsDiff;
+    timeDiff.unit = 'months';
+  } else if (daysDiff > 0) {
+    timeDiff.quantity = daysDiff;
+    timeDiff.unit = 'days';
+  } else if (hoursDiff > 0) {
+    timeDiff.quantity = hoursDiff;
+    timeDiff.unit = 'hours';
+  } else {
+    timeDiff.quantity = minutesDiff;
+    timeDiff.unit = 'minutes';
   }
+  return timeDiff;
 }
 
 async function download_img(imageUrl, imageName) {

@@ -97,7 +97,7 @@ function updateArticle(content){
                 </div>
             </div>
         </div>
-        <div id="article-stage" class="ck-content" ref="articleContentRef"></div>
+        <div id="article-stage" class="ck-content mt-5 mb-5" ref="articleContentRef"></div>
         <ArticleEditorComponent v-if="isYourOwnArticle" :orgContent="articleContent"
             :stageId="'article-stage'" :articleId="articleId" @updateArticle="updateArticle" />
     </div>

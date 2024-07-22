@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '../stores/UserStore';
-import { useSearchStore } from '../stores/SearchStore';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from "vue-i18n";
+import SearchComponent from './partials/Search.vue';
 
 const { t, locale } = useI18n({ useScope: 'global' });
 const route = useRoute();
@@ -27,12 +27,6 @@ onMounted(() => {
   }
 })
 
-const searchStore = useSearchStore();
-const searchVal = ref(null);
-watch(searchVal, (newSearchVal) => {
-  searchStore.search = newSearchVal
-})
-
 const darkModeVal = ref(false)
 function darkModeSwitch() {
   darkModeVal.value = !darkModeVal.value
@@ -47,7 +41,7 @@ function logout() {
   userStore.recentTriggerToast = Date.now()
   router.push('/');
 }
-function settings(){
+function settings() {
   router.push('/settings')
 }
 </script>
@@ -62,17 +56,18 @@ function settings(){
           </router-link>
         </div>
         <div class="col-12 col-md-6 d-flex align-items-center">
-          <input v-if="route.name == 'pages'" id="t-search-i" class="form-control" type="text"
-            :placeholder="$t('messages.search')" code-val="" v-model="searchVal">
+          <SearchComponent v-if="route.name == 'pages'" />
         </div>
         <div class="col-12 col-md-3 d-flex justify-content-end align-items-center">
           <div class="d-flex flex-column justify-content-center" v-if="userStore.isLoggedIn" id="header-user-info">
             <div class="dropdown">
-              <i class="bi bi-person-circle fs-3" role="button" id="accountDropdownMenuButton" data-bs-toggle="dropdown"
-                aria-expanded="false" data-bs-auto-close="outside"></i>
-              <ul class="dropdown-menu"  id="accountDropdownMenu" aria-labelledby="accountDropdownMenuButton">
-                <li class="dropdown-item" @click.stop="darkModeSwitch" role="button">
-                  <div class="d-flex justify-content-between align-items-center">
+              <img :src="userStore.avatar" alt="avatar" width="40" height="40"
+                role="button" id="accountDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside"
+                class="me-2 rounded-circle" ref="avatarRef">
+              <ul class="dropdown-menu" id="accountDropdownMenu" aria-labelledby="accountDropdownMenuButton">
+                <li class="dropdown-item d-flex align-items-center" @click.stop="darkModeSwitch" role="button">
+                  <i class="bi bi-moon fs-4 me-3"></i>
+                  <div class="d-flex justify-content-between align-items-center flex-grow-1">
                     <div class="text-capitalize">{{ $t('labels.darkMode') }}</div>
                     <div class="form-check form-switch">
                       <input class="form-check-input switch-btn" type="checkbox" id="flexSwitchCheckDefault"
@@ -82,13 +77,16 @@ function settings(){
                 </li>
                 <li class="dropdown-item" role="button">
                   <div class="dropdown">
-                    <div ref="langDropdownMenuRef" class="d-flex justify-content-between align-items-center"
+                    <div ref="langDropdownMenuRef" class="d-flex align-items-center"
                       @click.stop="toggleLangMenu" id="languageDropdownMenuButton" data-bs-toggle="dropdown"
                       :aria-expanded="isOpenLangMenu">
-                      <span class="text-capitalize">{{ $t('labels.language') }}: {{
+                      <i class="bi bi-translate fs-4 me-3"></i>
+                      <div class="d-flex justify-content-between align-items-center flex-grow-1">
+                        <span class="text-capitalize">{{ $t('labels.language') }}: {{
             $t(`labels.languages.${$i18n.locale}`) }}</span>
-                      <i class="bi bi-chevron-down" v-if="isOpenLangMenu == false"></i>
-                      <i class="bi bi-chevron-up" v-if="isOpenLangMenu == true"></i>
+                        <i class="bi bi-chevron-down" v-if="isOpenLangMenu == false"></i>
+                        <i class="bi bi-chevron-up" v-if="isOpenLangMenu == true"></i>
+                      </div>
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
                       <li class="dropdown-item text-capitalize" v-for="locale in $i18n.availableLocales"
@@ -97,11 +95,13 @@ function settings(){
                     </ul>
                   </div>
                 </li>
-                <li class="dropdown-item text-capitalize" role="button" @click="logout">
-                  {{ $t("labels.logout") }}
+                <li class="dropdown-item text-capitalize d-flex align-items-center" role="button" @click="settings">
+                  <i class="bi bi-gear fs-4 me-3"></i>
+                  <span>{{ $t("labels.settings") }}</span>
                 </li>
-                <li class="dropdown-item text-capitalize" role="button" @click="settings">
-                  {{ $t("labels.settings") }}
+                <li class="dropdown-item text-capitalize d-flex align-items-center" role="button" @click="logout">
+                  <i class="bi bi-box-arrow-right fs-4 me-3"></i>
+                  <span>{{ $t("labels.logout") }}</span>
                 </li>
               </ul>
             </div>
@@ -136,7 +136,7 @@ function settings(){
                     <ul class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
                       <li class="dropdown-item text-capitalize" v-for="locale in $i18n.availableLocales"
                         @click="chooseLocale(locale)">{{
-                        $t(`labels.languages.${locale}`) }}</li>
+            $t(`labels.languages.${locale}`) }}</li>
                     </ul>
                   </div>
                 </li>
@@ -150,11 +150,6 @@ function settings(){
 </template>
 
 <style scoped>
-/* .dropdown-item{
-  padding-bottom: 0;
-  padding-top: 0;
-} */
-
 .nav-bar {
   position: fixed;
   width: 100%;
@@ -178,7 +173,7 @@ function settings(){
   font-size: 1.25rem;
 }
 
-.form-check{
+.form-check {
   margin-bottom: 0
 }
 
@@ -188,7 +183,8 @@ function settings(){
   margin: 0;
 }
 
-#settingsDropdownMenu, #accountDropdownMenu {
+#settingsDropdownMenu,
+#accountDropdownMenu {
   width: 250px;
 }
 

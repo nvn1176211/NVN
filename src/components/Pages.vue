@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/UserStore';
 import VotesComponent from './partials/Votes.vue';
@@ -13,19 +13,27 @@ const isDisabledBtn = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
 let timeDiff = window.helpers.timeDiff;
+const sort = ref('desc')
+const type = ref('')
 
 onMounted(() => {
-    window.scrollTo(0, 0);
+	window.scrollTo(0, 0);
 	window.addEventListener('scroll', handleScroll);
 })
 onUnmounted(() => {
 	window.removeEventListener('scroll', handleScroll);
 })
+watch(sort, (newVal) => {
+	searchStore.sort = newVal
+})
+watch(type, (newVal) => {
+	searchStore.type = newVal
+})
 
 const pageRef = ref(null);
-function handleScroll(){
-	if(!pageRef.value.lastElementChild) return false
-	if(pageRef.value.lastElementChild.offsetTop - window.scrollY < 800) searchStore.$loadMore()
+function handleScroll() {
+	if (!pageRef.value.lastElementChild) return false
+	if (pageRef.value.lastElementChild.offsetTop - window.scrollY < 800) searchStore.$loadMore()
 }
 
 function moveToCreatePage() {
@@ -40,6 +48,21 @@ function openPage(url) {
 <template>
 	<div class="row">
 		<div class="col-12 col-md-6">
+			<div class="d-flex">
+				<div class="sort-ctn me-2">
+					<select id="sort" name="sort" v-model="sort" class="form-select text-capitalize" aria-label="Default select example">
+						<option value="desc">{{ $t('labels.lastest') }}</option>
+						<option value="asc">{{ $t('labels.oldest') }}</option>
+					</select>
+				</div>
+				<div class="sort-ctn">
+					<select id="sort" name="sort" v-model="type" class="form-select text-capitalize" aria-label="Default select example">
+						<option value="">{{ $t('labels.all') }}</option>
+						<option value="articles">{{ $t('labels.articles') }}</option>
+						<option value="discussions">{{ $t('labels.discussions') }}</option>
+					</select>
+				</div>
+			</div>
 		</div>
 		<div class="col-12 col-md-6">
 			<div class="d-flex align-items-center justify-content-end">
@@ -67,15 +90,15 @@ function openPage(url) {
 			</div>
 			<div @click="openPage(`/${page.type}/${page.id}`)" class="page-right-part">
 				<div class="ps-3 pe-3 pt-3 pb-3">
-					<div>
+					<div class="d-flex align-items-center">
 						<span class="fw-bold">{{ page.author_name }}</span>
 						<i class="bi bi-dot"></i>
-						<span class="text-small text-secondary">
-							<small :title="page.f1_created_at">{{ timeDiff(page.f1_created_at) }}</small>
-						</span>
+						<small class="text-small text-secondary" :title="page.f1_created_at">{{
+					`${timeDiff(page.f1_created_at).quantity}
+							${$t(`labels.${timeDiff(page.f1_created_at).unit}`)} ${$t('labels.ago')}` }}</small>
 					</div>
 					<div class="d-flex align-items-center mt-1 mb-2">
-						<span class="badge bg-primary text-capitalize me-2">{{ page.type }}</span>
+						<span class="badge bg-primary text-capitalize me-2">{{ $t(`labels.${page.type}`) }}</span>
 						<h5 class="page-title m-0">{{ page.name }}</h5>
 					</div>
 					<div class="d-flex">
@@ -91,6 +114,10 @@ function openPage(url) {
 	</div>
 </template>
 <style scoped>
+.sort-ctn {
+	max-width: 100px;
+}
+
 .page {
 	border-color: rgb(204, 206, 209);
 	flex-wrap: wrap;

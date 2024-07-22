@@ -58,7 +58,7 @@ router.beforeEach(async (to, from) => {
     const userStore = useUserStore();
     let api_token = helpers.getCookie('api_token');
     if (api_token) {
-        const response = await fetch(`${env.USERS_INFO_API}?api_token=${api_token}`, {
+        const response = await fetch(`${env.USERS_VERIFY_API}?api_token=${api_token}`, {
             headers: {
                 'Accept': 'application/json',
             },
@@ -67,7 +67,7 @@ router.beforeEach(async (to, from) => {
         switch (response.status) {
             case 200:
                 userStore.username = resBodyObj.username;
-                userStore.email = resBodyObj.email;
+                userStore.avatar = resBodyObj.avatar;
                 userStore.isAdmin = resBodyObj.is_admin;
                 userStore.isLoggedIn = true;
                 break;
@@ -92,7 +92,7 @@ router.afterEach(async (to, from) => {
     const userStore = useUserStore();
     let api_token = helpers.getCookie('api_token');
     if (api_token) {
-        const response = await fetch(`${env.USERS_INFO_API}?api_token=${api_token}`, {
+        const response = await fetch(`${env.USERS_VERIFY_API}?api_token=${api_token}`, {
             headers: {
                 'Accept': 'application/json',
             },
@@ -101,7 +101,7 @@ router.afterEach(async (to, from) => {
         switch (response.status) {
             case 200:
                 userStore.username = resBodyObj.username;
-                userStore.email = resBodyObj.email;
+                userStore.avatar = resBodyObj.avatar;
                 userStore.isAdmin = resBodyObj.is_admin;
                 userStore.isLoggedIn = true;
                 break;
